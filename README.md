@@ -17,8 +17,8 @@ robust and powerful! If you want to contribute, please PR to `dev`. 💪
 ## Installation
 
 ```shell
-conda create -n autoba python==3.10
-conda activate autoba
+conda create -n abc python==3.10
+conda activate abc
 conda install -c anaconda softwares -y
 pip install openai pyyaml
 ```
