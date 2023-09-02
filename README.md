@@ -3,6 +3,7 @@
 
 Automated Bioinformatics Analysis via AutoBA.
 
+https://github.com/JoshuaChou2018/AutoBA/assets/25849209/45dd7b6a-05c8-4e3c-9f14-7d5ec4f00dd8
 
 
 ## News
