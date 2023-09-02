@@ -1,0 +1,8 @@
+data_list: [ './examples/case3.1/data/SRR620204.fastq.gz: chip-seq data for Ring1B',
+            './examples/case3.1/data/SRR620205.fastq.gz: chip-seq data for cbx7',
+            './examples/case3.1/data/SRR620206.fastq.gz: chip-seq data for SUZ12',
+            './examples/case3.1/data/SRR620208.fastq.gz: chip-seq data for IgGold',
+            './examples/case3.1/data/mm39.ncbiRefSeq.gtf: genome annotations mouse',
+            './examples/case3.1/data/mm39.fa: mouse genome' ]
+output_dir: './examples/case3.1/output'
+goal_description: 'call peaks for protein cbx7 with IgGold as control'

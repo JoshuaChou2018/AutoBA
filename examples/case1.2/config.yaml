@@ -1,0 +1,13 @@
+data_list: [ './examples/case1.2/data/SRR1374921.fastq.gz: single-end mouse rna-seq reads, replicate 1 in LoGlu group',
+            './examples/case1.2/data/SRR1374922.fastq.gz: single-end mouse rna-seq reads, replicate 2 in LoGlu group',
+            './examples/case1.2/data/SRR1374923.fastq.gz: single-end mouse rna-seq reads, replicate 1 in HiGlu group',
+            './examples/case1.2/data/SRR1374924.fastq.gz: single-end mouse rna-seq reads, replicate 2 in HiGlu group',
+            './examples/case1.2/data/TruSeq3-SE.fa: trimming adapter',
+            './examples/case1.2/data/mm39.fa: mouse mm39 genome fasta',
+            './examples/case1.2/data/mm39.ncbiRefSeq.gtf: mouse mm39 genome annotation' ]
+output_dir: './examples/case1.2/output'
+goal_description: 'Identify top5 down-regulated genes in HiGlu group'
+meta:
+    info: 'meta-data recorded by users for reference only'
+    title: 'The transcriptional landscape of mouse beta cells compared to human beta cells reveals notable species differences in long non-coding RNA and protein-coding gene expression, '
+    url: 'https://pubmed.ncbi.nlm.nih.gov/25051960/'

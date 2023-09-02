@@ -1,0 +1,3 @@
+data_list: [ './examples/case4.1/data/slice1.h5ad: spatial transcriptomics data for slice 1 in AnnData format',]
+output_dir: './examples/case4.1/output'
+goal_description: 'use squidpy for neighborhood enrichment analysis'

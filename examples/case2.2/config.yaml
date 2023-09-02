@@ -1,0 +1,3 @@
+data_list: [ './examples/case2.2/data/filtered_gene_bc_matrices/hg19: path to 10x mtx data',]
+output_dir: './examples/case2.2/output'
+goal_description: 'use scanpy to perform clustering and visualize the expression level of gene PPBP in the UMAP.'

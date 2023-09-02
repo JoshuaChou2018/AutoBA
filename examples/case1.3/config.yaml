@@ -1,0 +1,7 @@
+data_list: [ './examples/case1.3/data/rnaseq_1.fastq.gz: RNA-Seq read 1 data (left read)',
+            './examples/case1.3/data/rnaseq_2.fastq.gz: RNA-Seq read 2 data (right read)',
+            './examples/case1.3/data/CTAT_HumanFusionLib.mini.dat.gz: a small fusion annotation library',
+            './examples/case1.3/data/minigenome.fa: small genome sequence consisting of ~750 genes.',
+            './examples/case1.3/data/minigenome.gtf: transcript structure annotations for these genes' ]
+output_dir: './examples/case1.3/output'
+goal_description: 'Predict Fusion genes using STAR-Fusion'
