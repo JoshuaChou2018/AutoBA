@@ -17,8 +17,8 @@ robust and powerful! If you want to contribute, please PR to `dev`. 💪
 ## Installation
 
 ```shell
-conda create -n abc python==3.10
-conda activate abc
+conda create -n autoba python==3.10
+conda activate autoba
 conda install -c anaconda softwares -y
 pip install openai pyyaml
 ```
@@ -261,7 +261,7 @@ goal_description: 'use squidpy for neighborhood enrichment analysis'
 
 ## More Examples for Developer
 
-To use ABC in your case, please copy `config.yaml` to your destination and modify it accordingly.
+To use AutoBA in your case, please copy `config.yaml` to your destination and modify it accordingly.
 Then you are ready to go. We welcome all developers to submit PR to upload your special cases under `./projects`
 
 ## Citation
@@ -269,9 +269,9 @@ If you find this project useful in your research, please consider cite:
 
 ```bibtex
 @misc{zhou2023,
-    title={ABC: xxx},
+    title={Automated Bioinformatics Analysis via AutoBA},
     author={Juexiao Zhou},
-    howpublished = {\url{https://github.com/JoshuaChou2018/ABC}},
+    howpublished = {\url{https://github.com/JoshuaChou2018/AutoBA}},
     year={2023}
 }
 ```
