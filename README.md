@@ -1,7 +1,11 @@
 
 ## Introduction
 
-Automated Bioinformatics Analysis via AutoBA. <a href='media/AutoBA_v2.pdf'><img src='https://img.shields.io/badge/Paper-PDF-red'></a>
+**Automated Bioinformatics Analysis via AutoBA.** 
+
+King Abdullah University of Science and Technology, KAUST
+
+<a href='media/AutoBA_v2.pdf'><img src='https://img.shields.io/badge/Paper-PDF-red'></a>
 
 https://github.com/JoshuaChou2018/AutoBA/assets/25849209/45dd7b6a-05c8-4e3c-9f14-7d5ec4f00dd8
 
