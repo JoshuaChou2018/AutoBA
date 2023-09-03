@@ -25,7 +25,7 @@ if __name__ == '__main__':
 
     parser = argparse.ArgumentParser(description="ABC", add_help=False)
     parser.add_argument('--config',
-                        help='path/to/config.softwares',
+                        help='path/to/config.yaml',
                         default='./examples/case1.1/config.yaml')
     parser.add_argument('--openai',
                         help='openai api',
@@ -38,6 +38,21 @@ if __name__ == '__main__':
                         default=False,
                         type=bool)
     args = parser.parse_args()
+
+    print("""
+
+  /$$$$$$              /$$               /$$$$$$$   /$$$$$$ 
+ /$$__  $$            | $$              | $$__  $$ /$$__  $$
+| $$  \ $$ /$$   /$$ /$$$$$$    /$$$$$$ | $$  \ $$| $$  \ $$
+| $$$$$$$$| $$  | $$|_  $$_/   /$$__  $$| $$$$$$$ | $$$$$$$$
+| $$__  $$| $$  | $$  | $$    | $$  \ $$| $$__  $$| $$__  $$
+| $$  | $$| $$  | $$  | $$ /$$| $$  | $$| $$  \ $$| $$  | $$
+| $$  | $$|  $$$$$$/  |  $$$$/|  $$$$$$/| $$$$$$$/| $$  | $$
+|__/  |__/ \______/    \___/   \______/ |_______/ |__/  |__/
+                                                            
+           Automated Bioinformatics Analysis
+                  www.joshuachou.ink
+    """)
 
     with open(args.config, 'r') as file:
         configs = yaml.safe_load(file)
