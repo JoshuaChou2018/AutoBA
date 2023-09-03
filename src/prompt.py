@@ -8,6 +8,7 @@
 @Date    ：2023/5/2 11:07 
 '''
 from copy import deepcopy
+import time
 
 class PromptGenerator:
     def __init__(self):
@@ -105,19 +106,26 @@ class PromptGenerator:
     def set_tasks(self, tasks):
         self.tasks = deepcopy(tasks)
 
+    def slow_print(self, input_string, speed=0.01):
+        for char in str(input_string):
+            # 使用print函数打印每个字符，并设置end参数为空字符串，以避免在每个字符之间输出换行符
+            print(char, end='', flush=True)
+            time.sleep(speed)
+        print()
+
     def format_user_prompt(self, prompt, global_round):
         print(f'\033[31m[Round {global_round}]\033[0m')
         print(f'\033[32m[USER]\033[0m')
         for key in prompt:
-            print(f"\033[34m{key}\033[0m")
-            print(prompt[key])
+            self.slow_print(f"\033[34m{key}\033[0m", speed=0.001)
+            self.slow_print(prompt[key], speed=0.001)
         print()
 
     def format_ai_response(self, response_message):
         print(f'\033[32m[AI]\033[0m')
         for key in response_message:
-            print(f"\033[34m{key}\033[0m")
-            print(response_message[key])
+            self.slow_print(f"\033[34m{key}\033[0m", speed=0.01)
+            self.slow_print(response_message[key], speed=0.01)
         print(f'\033[33m-------------------------------------\033[0m')
         print()
 
