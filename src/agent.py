@@ -69,9 +69,10 @@ class Agent:
     def valid_json_response(self, response_message):
         if not os.path.isdir(f'{self.output_dir}'):
             os.makedirs(f'{self.output_dir}')
-        with open(f'{self.output_dir}/{self.global_round}_response.json', 'w') as w:
-            w.write(response_message)
         try:
+            with open(f'{self.output_dir}/{self.global_round}_response.json', 'w') as w:
+                # w.write(response_message)
+                json.dump(eval(response_message), w)
             json.load(open(f'{self.output_dir}/{self.global_round}_response.json'))
         except:
             print('[INVALID RESSPONSE]\n', response_message)
