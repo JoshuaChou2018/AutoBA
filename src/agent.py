@@ -71,8 +71,8 @@ class Agent:
             os.makedirs(f'{self.output_dir}')
         try:
             with open(f'{self.output_dir}/{self.global_round}_response.json', 'w') as w:
-                # w.write(response_message)
-                json.dump(eval(response_message), w)
+                w.write(response_message.replace('\'','\"'))
+                #json.dump(eval(response_message), w)
             json.load(open(f'{self.output_dir}/{self.global_round}_response.json'))
         except:
             print('[INVALID RESSPONSE]\n', response_message)
