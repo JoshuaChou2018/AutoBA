@@ -56,6 +56,8 @@ Run this command to start a simple example.
 
 `python app.py --config ./examples/case1.1/config.yaml --openai YOUR_OPENAI_API`
 
+**Please note that this work uses the GPT-4 API and does not guarantee that GPT-3 will work properly in all cases.**
+
 ## Examples 
 
 ### Example 1: Bulk RNA-Seq
