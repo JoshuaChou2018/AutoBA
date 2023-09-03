@@ -7,12 +7,11 @@ King Abdullah University of Science and Technology, KAUST
 
 <a href='media/AutoBA_v2.pdf'><img src='https://img.shields.io/badge/Paper-PDF-red'></a>
 
-https://github.com/JoshuaChou2018/AutoBA/assets/25849209/45dd7b6a-05c8-4e3c-9f14-7d5ec4f00dd8
-
+https://github.com/JoshuaChou2018/AutoBA/assets/25849209/641309a7-3659-4e46-a599-2fc1b26db98f
 
 ## News
 
-We are pleased announce the official release of AutoBA's latest version `v0.0.1`! 🎉🎉🎉
+We are pleased to announce the official release of AutoBA's latest version `v0.0.1`! 🎉🎉🎉
 
 The `main` branch serves as the primary branch, while the development branch is `dev`. 
 Thank you for your unwavering support and enthusiasm, and let's work together to make AutoBA even more 
@@ -31,7 +30,7 @@ pip install openai pyyaml
 
 ### Understand files
 
-`./example` contails several examples for you to start.
+`./example` contains several examples for you to start.
 
 Under `./example`, `config.yaml` defines your files and goals. Defining `data_list`, `output_dir` and `goal_description`
 in `config.yaml` is mandatory before running `app.py`.
@@ -269,7 +268,7 @@ To use AutoBA in your case, please copy `config.yaml` to your destination and mo
 Then you are ready to go. We welcome all developers to submit PR to upload your special cases under `./projects`
 
 ## Citation
-If you find this project useful in your research, please consider cite:
+If you find this project useful in your research, please consider citing:
 
 ```bibtex
 @misc{zhou2023,
