@@ -9,8 +9,7 @@ King Abdullah University of Science and Technology, KAUST
 
 https://github.com/JoshuaChou2018/AutoBA/assets/25849209/641309a7-3659-4e46-a599-2fc1b26db98f
 
-
-
+```shell
   /$$$$$$              /$$               /$$$$$$$   /$$$$$$ 
  /$$__  $$            | $$              | $$__  $$ /$$__  $$
 | $$  \ $$ /$$   /$$ /$$$$$$    /$$$$$$ | $$  \ $$| $$  \ $$
@@ -22,7 +21,8 @@ https://github.com/JoshuaChou2018/AutoBA/assets/25849209/641309a7-3659-4e46-a599
                                                             
            Automated Bioinformatics Analysis
                   www.joshuachou.ink
-                  
+```
+
 ## News
 
 We are pleased to announce the official release of AutoBA's latest version `v0.0.1`! 🎉🎉🎉
