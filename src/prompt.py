@@ -45,7 +45,7 @@ class PromptGenerator:
                     "You should use information in input to write a detailed plan to finish your goal.",
                     f"You should include the software name and should not use those software: {self.blacklist}.",
                     "You should only respond in JSON with the required format.",
-                    "Your JSON should enclosed in double quotes."
+                    "Your JSON should only enclosed in double quotes."
                 ],
                 "input": [
                         "You have the following information in a list with the format file path: file description. I provide those files to you, so you don't need to prepare the data.",
@@ -70,7 +70,7 @@ class PromptGenerator:
                     "You should use all information you have to write bash codes to finish your current task.",
                     "All code requirements must be followed strictly when you write codes.",
                     "You should only respond in JSON with the required format.",
-                    "Your JSON should enclosed in double quotes."
+                    "Your JSON should only enclosed in double quotes."
                 ],
                 "system": [
                     "You have a Ubuntu 18.04 system",
