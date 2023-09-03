@@ -35,7 +35,7 @@ robust and powerful! If you want to contribute, please PR to `dev`. 💪
 ```shell
 conda create -n abc python==3.10
 conda activate abc
-conda install -c anaconda softwares -y
+conda install -c anaconda yaml -y
 pip install openai==0.27.6 pyyaml
 ```
 
