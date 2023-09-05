@@ -303,4 +303,4 @@ If you find this project useful in your research, please consider citing:
 
 ## License
 
-This project is released under the [Apache 2.0 license](https://github.com/open-mmlab/mmsegmentation/blob/main/LICENSE).
+This project is released under the MIT license.
