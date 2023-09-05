@@ -21,22 +21,9 @@ King Abdullah University of Science and Technology, KAUST
 
 https://github.com/JoshuaChou2018/AutoBA/assets/25849209/641309a7-3659-4e46-a599-2fc1b26db98f
 
-## News
+## What's New
 
 We are pleased to announce the official release of AutoBA's latest version `v0.0.1`! 🎉🎉🎉
-
-The `main` branch serves as the primary branch, while the development branch is `dev`. 
-Thank you for your unwavering support and enthusiasm, and let's work together to make AutoBA even more 
-robust and powerful! If you want to contribute, please PR to `dev`. 💪
-
-## TODO list
-
-We're working hard to implement more features 
-
-- Automatic error feedback and code fixing
-- Get rid of GPT-4 backend, offer local LLMs (eg. code llama) as options for users
-- User Forum
-- ...
 
 ## Installation
 
@@ -67,7 +54,7 @@ Run this command to start a simple example.
 
 **Please note that this work uses the GPT-4 API and does not guarantee that GPT-3 will work properly in all cases.**
 
-## Examples 
+## Use Cases
 
 ### Example 1: Bulk RNA-Seq
 
@@ -278,12 +265,31 @@ output_dir: './examples/case4.1/output'
 goal_description: 'use squidpy for neighborhood enrichment analysis'
 ```
 
-## More Examples for Developer
+## Custom Examples for Users
 
 To use AutoBA in your case, please copy `config.yaml` to your destination and modify it accordingly.
 Then you are ready to go. We welcome all developers to submit PR to upload your special cases under `./projects`
 
+## TODO list
+
+We're working hard to achieve more features, welcome to PRs!
+
+- Automatic error feedback and code fixing
+- A UI-based yaml generator
+- Get rid of GPT-4 backend, offer local LLMs (eg. code llama) as options for users
+- User Forum
+- ...
+
+## Contributing
+
+We appreciate all contributions to improve AutoBA.
+
+The `main` branch serves as the primary branch, while the development branch is `dev`. 
+
+Thank you for your unwavering support and enthusiasm, and let's work together to make AutoBA even more robust and powerful! If you want to contribute, please PR to `dev`. 💪
+
 ## Citation
+
 If you find this project useful in your research, please consider citing:
 
 ```bibtex
@@ -294,3 +300,7 @@ If you find this project useful in your research, please consider citing:
     year={2023}
 }
 ```
+
+## License
+
+This project is released under the [Apache 2.0 license](https://github.com/open-mmlab/mmsegmentation/blob/main/LICENSE).
