@@ -29,6 +29,15 @@ The `main` branch serves as the primary branch, while the development branch is 
 Thank you for your unwavering support and enthusiasm, and let's work together to make AutoBA even more 
 robust and powerful! If you want to contribute, please PR to `dev`. 💪
 
+## TODO list
+
+We're working hard to implement more features 
+
+- Automatic error feedback and code fixing
+- Get rid of GPT-4 backend, offer local LLMs (eg. code llama) as options for users
+- User Forum
+- ...
+
 ## Installation
 
 ```shell
@@ -36,6 +45,7 @@ conda create -n abc python==3.10
 conda activate abc
 conda install -c anaconda yaml -y
 pip install openai==0.27.6 pyyaml
+pip install plotly==5.14.1 dash==2.9.3 pandas==2.0.1 dash-mantine-components==0.12.1
 ```
 
 ## Get Started
@@ -76,10 +86,6 @@ data_list: [ './examples/case1.1/data/SRR1374921.fastq.gz: single-end mouse rna-
             './examples/case1.1/data/mm39.ncbiRefSeq.gtf: mouse mm39 genome annotation' ]
 output_dir: './examples/case1.1/output'
 goal_description: 'find the differentially expressed genes'
-meta:
-    info: 'meta-data recorded by users for reference only'
-    title: 'The transcriptional landscape of mouse beta cells compared to human beta cells reveals notable species differences in long non-coding RNA and protein-coding gene expression, '
-    url: 'https://pubmed.ncbi.nlm.nih.gov/25051960/'
 ```
 
 ##### Download Data
@@ -113,10 +119,6 @@ data_list: [ './examples/case1.2/data/SRR1374921.fastq.gz: single-end mouse rna-
             './examples/case1.2/data/mm39.ncbiRefSeq.gtf: mouse mm39 genome annotation' ]
 output_dir: './examples/case1.2/output'
 goal_description: 'Identify top5 down-regulated genes in HiGlu group'
-meta:
-    info: 'meta-data recorded by users for reference only'
-    title: 'The transcriptional landscape of mouse beta cells compared to human beta cells reveals notable species differences in long non-coding RNA and protein-coding gene expression, '
-    url: 'https://pubmed.ncbi.nlm.nih.gov/25051960/'
 ```
 
 ##### Download Data
