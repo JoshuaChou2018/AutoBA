@@ -19,7 +19,7 @@ King Abdullah University of Science and Technology, KAUST
 
 <a href='media/AutoBA_v3.pdf'><img src='https://img.shields.io/badge/Paper-PDF-red'></a>
 
-https://github.com/JoshuaChou2018/AutoBA/assets/25849209/641309a7-3659-4e46-a599-2fc1b26db98f
+https://github.com/JoshuaChou2018/AutoBA/assets/25849209/96301111-90e6-4a1b-847c-96fcf4da2055
 
 ## What's New
 
