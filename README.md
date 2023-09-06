@@ -19,7 +19,11 @@ King Abdullah University of Science and Technology, KAUST
 
 <a href='media/AutoBA_v3.pdf'><img src='https://img.shields.io/badge/Paper-PDF-red'></a>
 
-https://github.com/JoshuaChou2018/AutoBA/assets/25849209/96301111-90e6-4a1b-847c-96fcf4da2055
+
+
+https://github.com/JoshuaChou2018/AutoBA/assets/25849209/3334417a-de59-421c-aa5e-e2ac16ce90db
+
+
 
 ## What's New
 
@@ -32,6 +36,7 @@ conda create -n abc python==3.10
 conda activate abc
 conda install -c anaconda yaml -y
 pip install openai==0.27.6 pyyaml
+# (optional) for features under development: the yaml generator UI
 pip install plotly==5.14.1 dash==2.9.3 pandas==2.0.1 dash-mantine-components==0.12.1
 ```
 
