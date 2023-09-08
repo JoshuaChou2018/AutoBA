@@ -298,11 +298,13 @@ Thank you for your unwavering support and enthusiasm, and let's work together to
 If you find this project useful in your research, please consider citing:
 
 ```bibtex
-@misc{zhou2023,
-    title={Automated Bioinformatics Analysis via AutoBA},
-    author={Juexiao Zhou},
-    howpublished = {\url{https://github.com/JoshuaChou2018/AutoBA}},
-    year={2023}
+@misc{zhou2023automated,
+      title={Automated Bioinformatics Analysis via AutoBA}, 
+      author={Juexiao Zhou and Bin Zhang and Xiuying Chen and Haoyang Li and Xiaopeng Xu and Siyuan Chen and Xin Gao},
+      year={2023},
+      eprint={2309.03242},
+      archivePrefix={arXiv},
+      primaryClass={q-bio.GN}
 }
 ```
 
