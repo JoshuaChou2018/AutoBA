@@ -31,7 +31,7 @@ if __name__ == '__main__':
                         help='openai api',
                         default='SET_YOUR_OPENAI_API')
     parser.add_argument('--model',
-                        help='openai model',
+                        help='model options: gpt-3.5 (requires openai api), gpt-4 (requires openai api), codellama-7bi',
                         default='gpt-4')
     parser.add_argument('--excute',
                         help='excute code or only writing codes',

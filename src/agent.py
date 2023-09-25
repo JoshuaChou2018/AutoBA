@@ -11,6 +11,7 @@ import os.path
 
 from src.prompt import PromptGenerator
 from src.spinner import Spinner
+from src.local_llm import api_preload, api_generator
 import openai
 import time
 import json
@@ -25,45 +26,76 @@ class Agent:
         self.update_data_lists.append(f'{output_dir}: all outputs should be stored under this dir')
         self.generator = PromptGenerator()
         self.model_engine = model_engine
+        self.valid_model_engines = ['gpt-3.5', 'gpt-4', 'codellama-7bi']
         self.global_round = 0
         self.excute = excute
         openai.api_key = openai_api
 
+        if self.model_engine not in self.valid_model_engines:
+            print('[ERROR] model invalid, please check the model engine selected!')
+            exit()
+
+        # preload local model
+        if self.model_engine == 'codellama-7bi':
+            import os
+            import torch.distributed as dist
+            os.environ['MASTER_ADDR'] = 'localhost'
+            os.environ['MASTER_PORT'] = '5678'
+            dist.init_process_group(backend='nccl', init_method='env://', rank=0, world_size=1)
+            self.local_llm_generator = api_preload(ckpt_dir='src/codellama-main/CodeLlama-7b-Instruct/',
+                                    tokenizer_path='src/codellama-main/CodeLlama-7b-Instruct/tokenizer.model',
+                                    max_seq_len=4096)
+
     def get_single_response(self, prompt):
 
-        response = openai.ChatCompletion.create(
-            model=self.model_engine,
-              messages=[
-                {"role": "user", "content": str(prompt)}],
-            max_tokens=1024,
-            temperature=0,
-        )
+        # use openai
+        if self.model_engine == 'gpt-3.5' or self.model_engine == 'gpt-4':
+            response = openai.ChatCompletion.create(
+                model=self.model_engine,
+                  messages=[
+                    {"role": "user", "content": str(prompt)}],
+                max_tokens=1024,
+                temperature=0,
+            )
 
-        """
-        {
-          "choices": [
+            """
             {
-              "finish_reason": "stop",
-              "index": 0,
-              "message": {
-                "content": "Hello! As an AI language model, I don't have emotions, but I'm functioning well. I'm here to assist you with any questions or tasks you may have. How can I help you today?",
-                "role": "assistant"
+              "choices": [
+                {
+                  "finish_reason": "stop",
+                  "index": 0,
+                  "message": {
+                    "content": "Hello! As an AI language model, I don't have emotions, but I'm functioning well. I'm here to assist you with any questions or tasks you may have. How can I help you today?",
+                    "role": "assistant"
+                  }
+                }
+              ],
+              "created": 1683014436,
+              "id": "chatcmpl-7BfE4AdTo5YlSIWyMDS6nL6CYv5is",
+              "model": "gpt-3.5-turbo-0301",
+              "object": "chat.completion",
+              "usage": {
+                "completion_tokens": 42,
+                "prompt_tokens": 20,
+                "total_tokens": 62
               }
             }
-          ],
-          "created": 1683014436,
-          "id": "chatcmpl-7BfE4AdTo5YlSIWyMDS6nL6CYv5is",
-          "model": "gpt-3.5-turbo-0301",
-          "object": "chat.completion",
-          "usage": {
-            "completion_tokens": 42,
-            "prompt_tokens": 20,
-            "total_tokens": 62
-          }
-        }
-        """
+            """
 
-        response_message = response['choices'][0]['message']['content']
+            response_message = response['choices'][0]['message']['content']
+        elif self.model_engine == 'codellama-7bi':
+            instructions = [
+                [
+                    {
+                        "role": "user",
+                        "content": str(prompt),
+                    }
+                ],
+            ]
+            results = api_generator(instructions=instructions,
+                                    generator=self.local_llm_generator,
+                                    temperature=0)
+            response_message = results[0]['generation']['content']
         return response_message
 
     def valid_json_response(self, response_message):
@@ -107,7 +139,8 @@ class Agent:
             while not self.valid_json_response(response_message):
                 print(f'\033[32m[Invalid Response, Waiting for 20s and Retrying...]\033[0m')
                 print(f'invalid response: {response_message}')
-                time.sleep(20)
+                if 'gpt' in self.model_engine:
+                    time.sleep(20)
                 response_message = self.get_single_response(init_prompt)
             response_message = json.load(open(f'{self.output_dir}/{self.global_round}_response.json'))
         self.generator.format_ai_response(response_message)
@@ -136,7 +169,8 @@ class Agent:
                 while not self.valid_json_response(response_message):
                     print(f'\033[32m[Invalid Response, Waiting for 20s and Retrying...]\033[0m')
                     print(f'invalid response: {response_message}')
-                    time.sleep(20)
+                    if 'gpt' in self.model_engine:
+                        time.sleep(20)
                     response_message = self.get_single_response(prompt)
                 response_message = json.load(open(f'{self.output_dir}/{self.global_round}_response.json'))
             self.generator.format_ai_response(response_message)

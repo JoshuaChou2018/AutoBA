@@ -27,17 +27,36 @@ https://github.com/JoshuaChou2018/AutoBA/assets/25849209/3334417a-de59-421c-aa5e
 
 ## What's New
 
-We are pleased to announce the official release of AutoBA's latest version `v0.0.1`! 🎉🎉🎉
+- **[2023/09]** We integrated code llama, now users can choose to use chatgpt or local llm as backends, we currently recommend using chatgpt because tests have found that codellama is not as effective as chatgpt for complex bioinformatics tasks.
+- **[2023/09]** We are pleased to announce the official release of AutoBA's latest version `v0.0.1`! 🎉🎉🎉
+
+## TODO list
+
+We're working hard to achieve more features, welcome to PRs!
+
+- Automatic error feedback and code fixing
+- A UI-based yaml generator
+- Get rid of GPT-4 backend, offer local LLMs (eg. code llama) as options for users
+- User Forum
+- ...
 
 ## Installation
 
 ```shell
+# (mandatory) for basic functions
 conda create -n abc python==3.10
 conda activate abc
 conda install -c anaconda yaml -y
 pip install openai==0.27.6 pyyaml
+
 # (optional) for features under development: the yaml generator UI
 pip install plotly==5.14.1 dash==2.9.3 pandas==2.0.1 dash-mantine-components==0.12.1
+
+# (optional) for local llm
+cd src/codellama-main
+pip install -e .
+# download codellama model weights: CodeLlama-7b-Instruct
+bash download.sh
 ```
 
 ## Get Started
@@ -53,9 +72,13 @@ in `config.yaml` is mandatory before running `app.py`.
 
 ### Start with one command
 
-Run this command to start a simple example.
+Run this command to start a simple example with chatgpt as backend (**recommended**).
 
-`python app.py --config ./examples/case1.1/config.yaml --openai YOUR_OPENAI_API`
+`python app.py --config ./examples/case1.1/config.yaml --openai YOUR_OPENAI_API --model gpt-4`
+
+or with local llm as backend (**not recommended, in development and only for testing purposes**)
+
+`python app.py --config ./examples/case1.1/config.yaml --model codellama-7bi`
 
 **Please note that this work uses the GPT-4 API and does not guarantee that GPT-3 will work properly in all cases.**
 
@@ -274,16 +297,6 @@ goal_description: 'use squidpy for neighborhood enrichment analysis'
 
 To use AutoBA in your case, please copy `config.yaml` to your destination and modify it accordingly.
 Then you are ready to go. We welcome all developers to submit PR to upload your special cases under `./projects`
-
-## TODO list
-
-We're working hard to achieve more features, welcome to PRs!
-
-- Automatic error feedback and code fixing
-- A UI-based yaml generator
-- Get rid of GPT-4 backend, offer local LLMs (eg. code llama) as options for users
-- User Forum
-- ...
 
 ## Contributing
 
