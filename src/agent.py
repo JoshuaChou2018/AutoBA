@@ -94,7 +94,7 @@ class Agent:
             ]
             results = api_generator(instructions=instructions,
                                     generator=self.local_llm_generator,
-                                    temperature=0.3)
+                                    temperature=0.6)
             response_message = results[0]['generation']['content']
         return response_message
 
