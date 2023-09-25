@@ -76,11 +76,11 @@ Run this command to start a simple example with chatgpt as backend (**recommende
 
 `python app.py --config ./examples/case1.1/config.yaml --openai YOUR_OPENAI_API --model gpt-4`
 
+**Please note that this work uses the GPT-4 API and does not guarantee that GPT-3 will work properly in all cases.**
+
 or with local llm as backend (**not recommended, in development and only for testing purposes**)
 
 `python app.py --config ./examples/case1.1/config.yaml --model codellama-7bi`
-
-**Please note that this work uses the GPT-4 API and does not guarantee that GPT-3 will work properly in all cases.**
 
 ## Use Cases
 
