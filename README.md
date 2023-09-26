@@ -36,7 +36,7 @@ We're working hard to achieve more features, welcome to PRs!
 
 - Automatic error feedback and code fixing
 - A UI-based yaml generator
-- Get rid of GPT-4 backend, offer local LLMs (eg. code llama) as options for users
+- ~~Get rid of GPT-4 backend, offer local LLMs (eg. code llama) as options for users~~
 - User Forum
 - ...
 
