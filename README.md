@@ -27,7 +27,7 @@ https://github.com/JoshuaChou2018/AutoBA/assets/25849209/3334417a-de59-421c-aa5e
 
 ## What's New
 
-- **[2023/09]** We integrated code llama, now users can choose to use chatgpt or local llm as backends, we currently recommend using chatgpt because tests have found that codellama is not as effective as chatgpt for complex bioinformatics tasks.
+- **[2023/09]** We integrated codellama 7b-Instruct, 13b-Instruct, 34b-Instruct, now users can choose to use chatgpt or local llm as backends, we currently recommend using chatgpt because tests have found that codellama is not as effective as chatgpt for complex bioinformatics tasks.
 - **[2023/09]** We are pleased to announce the official release of AutoBA's latest version `v0.0.1`! 🎉🎉🎉
 
 ## TODO list
@@ -55,7 +55,7 @@ pip install plotly==5.14.1 dash==2.9.3 pandas==2.0.1 dash-mantine-components==0.
 # (optional) for local llm
 cd src/codellama-main
 pip install -e .
-# download codellama model weights: CodeLlama-7b-Instruct
+# download codellama model weights: 7b-Instruct,13b-Instruct,34b-Instruct
 bash download.sh
 ```
 
@@ -81,6 +81,14 @@ Run this command to start a simple example with chatgpt as backend (**recommende
 or with local llm as backend (**not recommended, in development and only for testing purposes**)
 
 `python app.py --config ./examples/case1.1/config.yaml --model codellama-7bi`
+
+### Model Zoo
+
+- gpt-3.5: openai chatgpt-3.5
+- gpt-4: openai chatgpt-4
+- codellama-7bi: 7b-Instruct
+- codellama-13bi: 13b-Instruct
+- codellama-34bi: 34b-Instruct
 
 ## Use Cases
 

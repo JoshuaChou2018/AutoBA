@@ -26,7 +26,7 @@ class Agent:
         self.update_data_lists.append(f'{output_dir}: all outputs should be stored under this dir')
         self.generator = PromptGenerator()
         self.model_engine = model_engine
-        self.valid_model_engines = ['gpt-3.5', 'gpt-4', 'codellama-7bi']
+        self.valid_model_engines = ['gpt-3.5', 'gpt-4', 'codellama-7bi', 'codellama-13bi', 'codellama-34bi']
         self.global_round = 0
         self.excute = excute
         openai.api_key = openai_api
@@ -45,11 +45,29 @@ class Agent:
             self.local_llm_generator = api_preload(ckpt_dir='src/codellama-main/CodeLlama-7b-Instruct/',
                                     tokenizer_path='src/codellama-main/CodeLlama-7b-Instruct/tokenizer.model',
                                     max_seq_len=4096)
+        elif self.model_engine == 'codellama-13bi':
+            import os
+            import torch.distributed as dist
+            os.environ['MASTER_ADDR'] = 'localhost'
+            os.environ['MASTER_PORT'] = '5678'
+            dist.init_process_group(backend='nccl', init_method='env://', rank=0, world_size=1)
+            self.local_llm_generator = api_preload(ckpt_dir='src/codellama-main/CodeLlama-13b-Instruct/',
+                                    tokenizer_path='src/codellama-main/CodeLlama-13b-Instruct/tokenizer.model',
+                                    max_seq_len=4096)
+        elif self.model_engine == 'codellama-34bi':
+            import os
+            import torch.distributed as dist
+            os.environ['MASTER_ADDR'] = 'localhost'
+            os.environ['MASTER_PORT'] = '5678'
+            dist.init_process_group(backend='nccl', init_method='env://', rank=0, world_size=1)
+            self.local_llm_generator = api_preload(ckpt_dir='src/codellama-main/CodeLlama-34b-Instruct/',
+                                    tokenizer_path='src/codellama-main/CodeLlama-34b-Instruct/tokenizer.model',
+                                    max_seq_len=4096)
 
     def get_single_response(self, prompt):
 
         # use openai
-        if self.model_engine == 'gpt-3.5' or self.model_engine == 'gpt-4':
+        if self.model_engine in ['gpt-3.5', 'gpt-4']:
             response = openai.ChatCompletion.create(
                 model=self.model_engine,
                   messages=[
@@ -83,7 +101,7 @@ class Agent:
             """
 
             response_message = response['choices'][0]['message']['content']
-        elif self.model_engine == 'codellama-7bi':
+        elif self.model_engine in ['codellama-7bi', 'codellama-13bi', 'codellama-34bi']:
             instructions = [
                 [
                     {
