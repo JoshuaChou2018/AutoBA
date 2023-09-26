@@ -85,7 +85,7 @@ or with local llm as backend (**not recommended, in development and only for tes
 ### Model Zoo
 
 - gpt-3.5: openai chatgpt-3.5
-- gpt-4: openai chatgpt-4
+- gpt-4: openai chatgpt-4 (default)
 - codellama-7bi: 7b-Instruct
 - codellama-13bi: 13b-Instruct
 - codellama-34bi: 34b-Instruct

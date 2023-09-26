@@ -8,7 +8,7 @@
 @Date    ：2023/5/3 13:24 
 '''
 import os.path
-
+import os
 import torch.cuda
 from src.prompt import PromptGenerator
 from src.spinner import Spinner
@@ -38,7 +38,6 @@ class Agent:
 
         # preload local model
         if 'codellama' in self.model_engine:
-            import os
             import torch.distributed as dist
             os.environ['MASTER_ADDR'] = 'localhost'
             os.environ['MASTER_PORT'] = '5678'
