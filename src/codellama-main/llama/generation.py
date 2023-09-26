@@ -114,8 +114,8 @@ class Llama:
                 torch.set_default_tensor_type(torch.cuda.BFloat16Tensor)
             else:
                 torch.set_default_tensor_type(torch.cuda.HalfTensor)
-        else:
-            torch.set_default_tensor_type(torch.HalfTensor)
+        #else:
+        #    torch.set_default_tensor_type(torch.HalfTensor)
         model = Transformer(model_args)
         model.load_state_dict(checkpoint, strict=False)
         model.to(device)
