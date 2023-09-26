@@ -9,6 +9,7 @@
 '''
 import os.path
 
+import torch.cuda
 from src.prompt import PromptGenerator
 from src.spinner import Spinner
 from src.local_llm import api_preload, api_generator
@@ -36,30 +37,24 @@ class Agent:
             exit()
 
         # preload local model
-        if self.model_engine == 'codellama-7bi':
+        if 'codellama' in self.model_engine:
             import os
             import torch.distributed as dist
             os.environ['MASTER_ADDR'] = 'localhost'
             os.environ['MASTER_PORT'] = '5678'
-            dist.init_process_group(backend='nccl', init_method='env://', rank=0, world_size=1)
+            if torch.cuda.is_available():
+                dist.init_process_group(backend='nccl', init_method='env://', rank=0, world_size=1)
+            else:
+                dist.init_process_group(backend='gloo', init_method='env://', rank=0, world_size=1)
+        if self.model_engine == 'codellama-7bi':
             self.local_llm_generator = api_preload(ckpt_dir='src/codellama-main/CodeLlama-7b-Instruct/',
                                     tokenizer_path='src/codellama-main/CodeLlama-7b-Instruct/tokenizer.model',
                                     max_seq_len=4096)
         elif self.model_engine == 'codellama-13bi':
-            import os
-            import torch.distributed as dist
-            os.environ['MASTER_ADDR'] = 'localhost'
-            os.environ['MASTER_PORT'] = '5678'
-            dist.init_process_group(backend='nccl', init_method='env://', rank=0, world_size=1)
             self.local_llm_generator = api_preload(ckpt_dir='src/codellama-main/CodeLlama-13b-Instruct/',
                                     tokenizer_path='src/codellama-main/CodeLlama-13b-Instruct/tokenizer.model',
                                     max_seq_len=4096)
         elif self.model_engine == 'codellama-34bi':
-            import os
-            import torch.distributed as dist
-            os.environ['MASTER_ADDR'] = 'localhost'
-            os.environ['MASTER_PORT'] = '5678'
-            dist.init_process_group(backend='nccl', init_method='env://', rank=0, world_size=1)
             self.local_llm_generator = api_preload(ckpt_dir='src/codellama-main/CodeLlama-34b-Instruct/',
                                     tokenizer_path='src/codellama-main/CodeLlama-34b-Instruct/tokenizer.model',
                                     max_seq_len=4096)
