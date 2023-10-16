@@ -49,14 +49,14 @@ conda activate abc
 conda install -c anaconda yaml -y
 pip install openai==0.27.6 pyyaml
 
-# (optional) for features under development: the yaml generator UI
-pip install plotly==5.14.1 dash==2.9.3 pandas==2.0.1 dash-mantine-components==0.12.1
-
-# (optional) for local llm
+## for local llm
 cd src/codellama-main
 pip install -e .
-# download codellama model weights: 7b-Instruct,13b-Instruct,34b-Instruct
+## download codellama model weights: 7b-Instruct,13b-Instruct,34b-Instruct
 bash download.sh
+
+# (optional) for features under development: the yaml generator UI
+pip install plotly==5.14.1 dash==2.9.3 pandas==2.0.1 dash-mantine-components==0.12.1
 ```
 
 ## Get Started
