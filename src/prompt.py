@@ -11,12 +11,12 @@ from copy import deepcopy
 import time
 
 class PromptGenerator:
-    def __init__(self):
+    def __init__(self, blacklist=''):
         self.history_summary = ''
         self.current_goal = None
         self.global_goal = None
         self.tasks = None
-        self.blacklist = ['STAR', 'java']
+        self.blacklist = blacklist.split(',')
         self.special_softwares = ['hisat2, HISAT2, bowtie2: you should build genome index as the first step, use -U if input files are single-end reads, use -1 and -2 if input files are paird-end reads, you should use --readFilesCommand zcat if your input files ends with .gz, you should process each .gz separately. ',
                                   'trimmomatic: you should substitute with cutadapter. ',
                                   'cutadapter: you should name files with the id as prefix. '
@@ -85,7 +85,7 @@ class PromptGenerator:
                 "current task": self.current_goal,
                 "code requirement": [
                     f"You should not use those software: {self.blacklist}.",
-                    'You should always source activate the environment abc first.',
+                    'You should always source activate the environment abc first, add conda-forge and bioconda to the list of channels',
                     'You should always install dependencies with -y with conda or pip.',
                     'You should pay attention to the number of input files and do not miss any.',
                     'You should process each file independently and can not use FOR loop.',

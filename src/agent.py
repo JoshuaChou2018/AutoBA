@@ -16,20 +16,56 @@ from src.local_llm import api_preload, api_generator
 import openai
 import time
 import json
+import subprocess
+
+class CodeExcutor:
+    def __init__(self):
+        self.bash_code_path = None
+
+    def excute(self, bash_code_path):
+
+        self.bash_code_path = bash_code_path
+        with open(self.bash_code_path, 'r') as input_file:
+            bash_content = input_file.read()
+
+        self.bash_code_path_excute = self.bash_code_path + '.excute.sh'
+
+        # 打开新生成的 Bash 文件以供写入
+        with open(self.bash_code_path_excute, 'w') as output_file:
+            # 写入原始内容
+            output_file.write(bash_content)
+            # 在文件末尾添加打印特殊字符串的 Bash 命令
+            special_string = "K7pJhFbA3NqW Excute Success"
+            output_file.write('\n')  # 确保在新行开始
+            output_file.write(f'echo "{special_string}"')
+
+        # 使用 subprocess 执行 Bash 文件，将输出捕获到一个字符串中
+        completed_process = subprocess.run(['bash', self.bash_code_path_excute], stdout=subprocess.PIPE, stderr=subprocess.PIPE,
+                                           text=True)
+
+        # 获取 Bash 文件的标准输出和标准错误输出
+        output_string = completed_process.stdout
+        error_string = completed_process.stderr
+
+        if special_string in output_string:
+            return True, 'Success'
+        else:
+            return False, error_string
 
 class Agent:
-    def __init__(self,initial_data_list, output_dir, initial_goal_description, model_engine, openai_api, excute = True):
+    def __init__(self,initial_data_list, output_dir, initial_goal_description, model_engine, openai_api, excute = True, blacklist=''):
         self.initial_data_list = initial_data_list
         self.initial_goal_description = initial_goal_description
         self.tasks = []
         self.update_data_lists = [_ for _ in initial_data_list]
         self.output_dir = output_dir
         self.update_data_lists.append(f'{output_dir}: all outputs should be stored under this dir')
-        self.generator = PromptGenerator()
+        self.generator = PromptGenerator(blacklist=blacklist)
         self.model_engine = model_engine
         self.valid_model_engines = ['gpt-3.5', 'gpt-4', 'codellama-7bi', 'codellama-13bi', 'codellama-34bi']
         self.global_round = 0
         self.excute = excute
+        self.code_excutor = CodeExcutor()
         openai.api_key = openai_api
 
         if self.model_engine not in self.valid_model_engines:
@@ -132,13 +168,14 @@ class Agent:
             with open(f'{self.output_dir}/{self.global_round}.sh', 'w') as w:
                 w.write(response_message['code'])
             if self.excute:
-                os.system(f'bash {self.output_dir}/{self.global_round}.sh')
-            return True
-        except:
-            return False
+                excute_statu, excute_info = self.code_excutor.excute(bash_code_path=f'{self.output_dir}/{self.global_round}.sh')
+                #os.system(f'bash {self.output_dir}/{self.global_round}.sh')
+                return excute_statu, excute_info
+            return True, 'Success without excuting'
+        except Exception as e:
+            return False, e
 
-    def run(self):
-
+    def run_plan_phase(self):
         # initial prompt
         init_prompt = self.generator.get_prompt(
             data_list=self.initial_data_list,
@@ -167,8 +204,9 @@ class Agent:
         else:
             pass
 
+    def run_code_generation_phase(self):
         # finish task one-by-one with code
-        #print('[DEBUG] ', self.tasks)
+        # print('[DEBUG] ', self.tasks)
         while len(self.tasks) > 0:
             task = self.tasks.pop(0)
             prompt = self.generator.get_prompt(
@@ -189,7 +227,8 @@ class Agent:
 
             # excute code
             with Spinner(f'\033[32m[AI Excuting codes...]\033[0m'):
-                excute_success = self.excute_code(response_message)
+                excute_success, excute_info = self.excute_code(response_message)
+                #TODO
 
             self.generator.add_history(task, self.global_round, self.update_data_lists, code=response_message['code'])
             self.global_round += 1
@@ -198,4 +237,7 @@ class Agent:
             else:
                 pass
 
+    def run(self):
+        self.run_plan_phase()
+        self.run_code_generation_phase()
         print(f'\033[31m[Job Finished! Cheers!]\033[0m')
