@@ -40,8 +40,8 @@ if __name__ == '__main__':
                         default=False,
                         type=bool)
     parser.add_argument('--blacklist',
-                        help='list of softwares in blacklist, default: STAR, java, perl, annovar',
-                        default='STAR, java, perl, annovar',
+                        help='list of softwares in blacklist, default: STAR,java,perl,annovar',
+                        default='STAR,java,perl,annovar',
                         type=str)
     args = parser.parse_args()
 
