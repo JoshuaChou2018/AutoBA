@@ -93,6 +93,7 @@ class PromptGenerator:
                     'You should use the default values for all parameters that are not specified.',
                     'You should not repeat what you have done in history.',
                     'You should only use software directly you installed with conda.',
+                    'If you use Rscript -e, you should make sure all variables exist in your command, otherwise you need check your history to repeat previous steps and generate those variables.'
                 ],
                 "format": {
                     "tool": "name of the tool you use",
