@@ -17,7 +17,7 @@
 
 King Abdullah University of Science and Technology, KAUST
 
-<a href='media/AutoBA_v3.pdf'><img src='https://img.shields.io/badge/Paper-PDF-red'></a>
+<a href='media/AutoBA_v5_manuscript.pdf'><img src='https://img.shields.io/badge/Paper-PDF-red'></a>
 
 
 
