@@ -18,42 +18,51 @@ import time
 import json
 import subprocess
 
-class CodeExcutor:
+class CodeExecutor:
     def __init__(self):
         self.bash_code_path = None
 
-    def excute(self, bash_code_path):
+    def execute(self, bash_code_path):
 
         self.bash_code_path = bash_code_path
         with open(self.bash_code_path, 'r') as input_file:
             bash_content = input_file.read()
 
-        self.bash_code_path_excute = self.bash_code_path + '.excute.sh'
+        self.bash_code_path_execute = self.bash_code_path + '.execute.sh'
 
         # 打开新生成的 Bash 文件以供写入
-        with open(self.bash_code_path_excute, 'w') as output_file:
+        with open(self.bash_code_path_execute, 'w') as output_file:
             # 写入原始内容
             output_file.write(bash_content)
             # 在文件末尾添加打印特殊字符串的 Bash 命令
-            special_string = "K7pJhFbA3NqW Excute Success"
+            special_string = "K7pJhFbA3NqW execute Success"
             output_file.write('\n')  # 确保在新行开始
             output_file.write(f'echo "{special_string}"')
 
         # 使用 subprocess 执行 Bash 文件，将输出捕获到一个字符串中
-        completed_process = subprocess.run(['bash', self.bash_code_path_excute], stdout=subprocess.PIPE, stderr=subprocess.PIPE,
-                                           text=True)
+        process = subprocess.Popen(['bash', self.bash_code_path_execute],
+                                            stdout=subprocess.PIPE,
+                                            stderr=subprocess.PIPE,
+                                            text=True)
 
-        # 获取 Bash 文件的标准输出和标准错误输出
-        output_string = completed_process.stdout
-        error_string = completed_process.stderr
+        # 实时读取输出并打印
+        while True:
+            output = process.stdout.readline()
+            if output == '' and process.poll() is not None:
+                break
+            if output:
+                print(output.strip())
 
-        if special_string in output_string:
+        # 等待命令执行完毕
+        process.communicate()
+
+        if special_string in process.stdout:
             return True, 'Success'
         else:
-            return False, error_string
+            return False, process.stderr
 
 class Agent:
-    def __init__(self,initial_data_list, output_dir, initial_goal_description, model_engine, openai_api, excute = True, blacklist=''):
+    def __init__(self,initial_data_list, output_dir, initial_goal_description, model_engine, openai_api, execute = True, blacklist=''):
         self.initial_data_list = initial_data_list
         self.initial_goal_description = initial_goal_description
         self.tasks = []
@@ -64,8 +73,8 @@ class Agent:
         self.model_engine = model_engine
         self.valid_model_engines = ['gpt-3.5', 'gpt-4', 'codellama-7bi', 'codellama-13bi', 'codellama-34bi']
         self.global_round = 0
-        self.excute = excute
-        self.code_excutor = CodeExcutor()
+        self.execute = execute
+        self.code_executor = CodeExecutor()
         openai.api_key = openai_api
 
         if self.model_engine not in self.valid_model_engines:
@@ -161,17 +170,17 @@ class Agent:
     def process_tasks(self, response_message):
         self.tasks = response_message['plan']
 
-    def excute_code(self, response_message):
+    def execute_code(self, response_message):
         if not os.path.isdir(f'{self.output_dir}'):
             os.makedirs(f'{self.output_dir}')
         try:
             with open(f'{self.output_dir}/{self.global_round}.sh', 'w') as w:
                 w.write(response_message['code'])
-            if self.excute:
-                excute_statu, excute_info = self.code_excutor.excute(bash_code_path=f'{self.output_dir}/{self.global_round}.sh')
+            if self.execute:
+                execute_statu, execute_info = self.code_executor.execute(bash_code_path=f'{self.output_dir}/{self.global_round}.sh')
                 #os.system(f'bash {self.output_dir}/{self.global_round}.sh')
-                return excute_statu, excute_info
-            return True, 'Success without excuting'
+                return execute_statu, execute_info
+            return True, 'Success without executing'
         except Exception as e:
             return False, e
 
@@ -199,7 +208,7 @@ class Agent:
         self.generator.add_history(None, self.global_round, self.update_data_lists)
         self.global_round += 1
 
-        if self.excute == False:
+        if self.execute == False:
             time.sleep(15)
         else:
             pass
@@ -225,17 +234,17 @@ class Agent:
                 response_message = json.load(open(f'{self.output_dir}/{self.global_round}_response.json'))
             self.generator.format_ai_response(response_message)
 
-            # excute code
-            with Spinner(f'\033[32m[AI Excuting codes...]\033[0m'):
-                excute_success, excute_info = self.excute_code(response_message)
+            # execute code
+            with Spinner(f'\033[32m[AI Executing codes...]\033[0m'):
+                print(f'\033[32m[Execute Code Start]\033[0m')
+                execute_success, execute_info = self.execute_code(response_message)
+                print('\033[32m[Execute Code Finish]\033[0m ', execute_success, execute_info)
                 #TODO
 
             self.generator.add_history(task, self.global_round, self.update_data_lists, code=response_message['code'])
             self.global_round += 1
-            if self.excute == False:
+            if self.execute == False:
                 time.sleep(15)
-            else:
-                pass
 
     def run(self):
         self.run_plan_phase()

@@ -13,13 +13,13 @@ import yaml
 import argparse
 import time
 
-def main(init_data_list, output_dir, init_goal_description, model_engine, openai_api, excute, blacklist):
+def main(init_data_list, output_dir, init_goal_description, model_engine, openai_api, execute, blacklist):
     AIAgent = Agent(initial_data_list=init_data_list,
                     output_dir=output_dir,
                     initial_goal_description=init_goal_description,
                     model_engine=model_engine,
                     openai_api=openai_api,
-                    excute=excute,
+                    execute=execute,
                     blacklist=blacklist)
     AIAgent.run()
 
@@ -35,8 +35,8 @@ if __name__ == '__main__':
     parser.add_argument('--model',
                         help='model options: gpt-3.5 (requires openai api), gpt-4 (requires openai api), codellama-7bi',
                         default='gpt-4')
-    parser.add_argument('--excute',
-                        help='excute code or only writing codes',
+    parser.add_argument('--execute',
+                        help='execute code or only writing codes',
                         default=False,
                         type=bool)
     parser.add_argument('--blacklist',
@@ -67,7 +67,7 @@ if __name__ == '__main__':
     output_dir = configs['output_dir']
     init_goal_description = configs['goal_description']
     start_time = time.time()
-    main(init_data_list, output_dir, init_goal_description, args.model, args.openai, args.excute, args.blacklist)
+    main(init_data_list, output_dir, init_goal_description, args.model, args.openai, args.execute, args.blacklist)
     end_time = time.time()
     print(f'\033[31m[Total time cost: {end_time-start_time}]\033[0m')
 
