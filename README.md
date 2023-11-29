@@ -27,7 +27,7 @@ https://github.com/JoshuaChou2018/AutoBA/assets/25849209/3334417a-de59-421c-aa5e
 
 ## What's New
 
-- **[2023/11]** We updated the executor and are working on automatic error feedback and code fixing.
+- **[2023/11]** We updated the executor and released latest stable version (v0.0.2) and are working on automatic error feedback and code fixing.
 - **[2023/10]** We validated AutoBA on 40 conventional bioinformatics tasks and released our new pre-print at https://www.biorxiv.org/content/10.1101/2023.09.08.556814v2. More to come!
 - **[2023/09]** We integrated codellama 7b-Instruct, 13b-Instruct, 34b-Instruct, now users can choose to use chatgpt or local llm as backends, we currently recommend using chatgpt because tests have found that codellama is not as effective as chatgpt for complex bioinformatics tasks.
 - **[2023/09]** We are pleased to announce the official release of AutoBA's latest version `v0.0.1`! 🎉🎉🎉
