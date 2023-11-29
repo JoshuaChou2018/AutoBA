@@ -35,7 +35,7 @@ class CodeExecutor:
             # 写入原始内容
             output_file.write(bash_content)
             # 在文件末尾添加打印特殊字符串的 Bash 命令
-            special_string = "K7pJhFbA3NqW execute Success"
+            special_string = "K7pJhFbA3NqW"
             output_file.write('\n')  # 确保在新行开始
             output_file.write(f'echo "{special_string}"')
 
@@ -56,7 +56,7 @@ class CodeExecutor:
         # 等待命令执行完毕
         process.communicate()
 
-        if special_string in process.stdout:
+        if process.returncode == 0:
             return True, 'Success'
         else:
             return False, process.stderr

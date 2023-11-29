@@ -27,6 +27,7 @@ https://github.com/JoshuaChou2018/AutoBA/assets/25849209/3334417a-de59-421c-aa5e
 
 ## What's New
 
+- **[2023/11]** We updated the executor and are working on automatic error feedback and code fixing.
 - **[2023/10]** We validated AutoBA on 40 conventional bioinformatics tasks and released our new pre-print at https://www.biorxiv.org/content/10.1101/2023.09.08.556814v2. More to come!
 - **[2023/09]** We integrated codellama 7b-Instruct, 13b-Instruct, 34b-Instruct, now users can choose to use chatgpt or local llm as backends, we currently recommend using chatgpt because tests have found that codellama is not as effective as chatgpt for complex bioinformatics tasks.
 - **[2023/09]** We are pleased to announce the official release of AutoBA's latest version `v0.0.1`! 🎉🎉🎉
@@ -35,11 +36,12 @@ https://github.com/JoshuaChou2018/AutoBA/assets/25849209/3334417a-de59-421c-aa5e
 
 We're working hard to achieve more features, welcome to PRs!
 
-- Automatic error feedback and code fixing
-- A UI-based yaml generator
-- ~~Get rid of GPT-4 backend, offer local LLMs (eg. code llama) as options for users~~
-- User Forum
-- ...
+- [ ] Automatic error feedback and code fixing
+- [ ] A UI-based yaml generator
+- [ ] User Forum
+- [ ] Pack into a conda package, simplify the installation process
+- [x] Get rid of GPT-4 backend, offer local LLMs (eg. code llama) as options for users
+- [ ] ...
 
 ## Installation
 
@@ -53,7 +55,7 @@ pip install openai==0.27.6 pyyaml
 ## for local llm
 cd src/codellama-main
 pip install -e .
-## download codellama model weights: 7b-Instruct,13b-Instruct,34b-Instruct
+## download codellama model weights: 7b-Instruct,13b-Instruct,34b-Instruct, before this, users need to get the verification link from META
 bash download.sh
 
 # (optional) for features under development: the yaml generator UI
@@ -77,9 +79,9 @@ Run this command to start a simple example with chatgpt as backend (**recommende
 
 `python app.py --config ./examples/case1.1/config.yaml --openai YOUR_OPENAI_API --model gpt-4`
 
-**Please note that this work uses the GPT-4 API and does not guarantee that GPT-3 will work properly in all cases.**
+**Please note that this work uses the GPT-4 API and does not guarantee that GPT-3.5 will work properly in all cases.**
 
-or with local llm as backend (**not recommended, in development and only for testing purposes**)
+or with local llm as backend (**not recommended for the moment, in development and only for testing purposes**)
 
 `python app.py --config ./examples/case1.1/config.yaml --model codellama-7bi`
 
