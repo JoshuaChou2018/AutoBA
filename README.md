@@ -69,7 +69,8 @@ pip install plotly==5.14.1 dash==2.9.3 pandas==2.0.1 dash-mantine-components==0.
 `./example` contains several examples for you to start.
 
 Under `./example`, `config.yaml` defines your files and goals. Defining `data_list`, `output_dir` and `goal_description`
-in `config.yaml` is mandatory before running `app.py`.
+in `config.yaml` is mandatory before running `app.py`. **Absolute paths rather than relative paths are recommended for all file paths defined in `config.yaml`**.
+ 
 
 `app.py` run this file to start.
 
