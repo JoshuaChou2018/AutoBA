@@ -4,6 +4,8 @@
 from typing import Optional
 import fire
 from llama import Llama
+from transformers import AutoTokenizer, AutoModelForCausalLM, pipeline, set_seed
+import torch
 
 def api_preload(
     ckpt_dir: str,
@@ -12,11 +14,13 @@ def api_preload(
     max_batch_size: int = 8,
 ):
     print(">> start loading model")
+
     generator = Llama.build(
         ckpt_dir=ckpt_dir,
         tokenizer_path=tokenizer_path,
         max_seq_len=max_seq_len,
         max_batch_size=max_batch_size,
+        model_parallel_size=1
     )
     print(">> model loaded")
     return generator
@@ -33,6 +37,28 @@ def api_generator(instructions,
         top_p=top_p,
     )
     return results
+
+def api_preload_hf(
+    ckpt_dir: str,
+    tokenizer_path: str = None,
+    max_seq_len: int = 512,
+    max_batch_size: int = 8,
+):
+    print(">> start loading model")
+    tokenizer = AutoTokenizer.from_pretrained(ckpt_dir, padding_side="left")
+    model = AutoModelForCausalLM.from_pretrained(ckpt_dir)
+    model.to('cuda')
+    generator = pipeline('text-generation', model=model, tokenizer=tokenizer, device=0)
+    print(">> model loaded")
+    return generator
+
+def api_generator_hf(instructions,
+                  generator):
+    _prompt = ''
+    results = generator(instructions[0][0]['content'], renormalize_logits=True, do_sample=True, use_cache=True, max_new_tokens=10)
+
+    return results
+
 def main(
     ckpt_dir: str,
     tokenizer_path: str,
@@ -88,16 +114,12 @@ def main(
         )
         print("\n==================================\n")
 
+def test1():
+    ckpt_dir = 'codellama-main/CodeLlama-7b-Instruct/'
+    tokenizer_path = 'codellama-main/CodeLlama-7b-Instruct/tokenizer.model'
 
-if __name__ == "__main__":
-    import os
-    import torch.distributed as dist
-    os.environ['MASTER_ADDR'] = 'localhost'
-    os.environ['MASTER_PORT'] = '5678'
-    dist.init_process_group(backend='nccl', init_method='env://', rank=0, world_size=1)
-
-    generator = api_preload(ckpt_dir='codellama-main/CodeLlama-7b-Instruct/',
-                            tokenizer_path='codellama-main/CodeLlama-7b-Instruct/tokenizer.model')
+    generator = api_preload(ckpt_dir=ckpt_dir,
+                            tokenizer_path=tokenizer_path)
     instructions = [
         [
             {
@@ -114,3 +136,35 @@ if __name__ == "__main__":
             f"> {result['generation']['role'].capitalize()}: {result['generation']['content']}"
         )
         print("\n==================================\n")
+
+def test2():
+    ckpt_dir = 'codellama-main/CodeLlama-7b-Instruct-hf/'
+    tokenizer_path = 'codellama-main/CodeLlama-7b-Instruct-hf/'
+
+    generator = api_preload_hf(ckpt_dir=ckpt_dir)
+    instructions = [
+        [
+            {
+                "role": "user",
+                "content": "What is the difference between inorder and preorder traversal? Give an example in Python.",
+            }
+        ],
+    ]
+    results = api_generator_hf(instructions=instructions, generator=generator)
+    print(results)
+    for instruction, result in zip(instructions, results):
+        for msg in instruction:
+            print(f"{msg['role'].capitalize()}: {msg['content']}\n")
+        print(
+            f"> {result['generation']['role'].capitalize()}: {result['generation']['content']}"
+        )
+        print("\n==================================\n")
+
+if __name__ == "__main__":
+    import os
+    import torch.distributed as dist
+    os.environ['MASTER_ADDR'] = 'localhost'
+    os.environ['MASTER_PORT'] = '5678'
+    dist.init_process_group(backend='nccl', init_method='env://', rank=0, world_size=1)
+    test2()
+

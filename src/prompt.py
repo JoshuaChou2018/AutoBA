@@ -11,11 +11,12 @@ from copy import deepcopy
 import time
 
 class PromptGenerator:
-    def __init__(self, blacklist=''):
+    def __init__(self, blacklist='', engine = None):
         self.history_summary = ''
         self.current_goal = None
         self.global_goal = None
         self.tasks = None
+        self.engine = engine
         self.blacklist = blacklist.split(',')
         self.special_softwares = ['hisat2, HISAT2, bowtie2: you should build genome index as the first step, use -U if input files are single-end reads, use -1 and -2 if input files are paird-end reads, you should use --readFilesCommand zcat if your input files ends with .gz, you should process each .gz separately. ',
                                   'trimmomatic: you should substitute with cutadapter. ',
@@ -26,7 +27,7 @@ class PromptGenerator:
                                   "gsea: you should substitute gsea-cli.sh with gsea-cli, you should use -set_max, -set_min and -zip_report false"
                                 ]
 
-    def get_prompt(self, data_list, goal_description, global_round):
+    def get_prompt(self, data_list, goal_description, global_round, execute_success=True, execute_info=None):
         """
 
         :param data_list: ['data path: data description']
@@ -38,26 +39,27 @@ class PromptGenerator:
         if global_round == 0:
             self.global_goal = goal_description
             prompt = {
-                "role": "Act as a bioinformatician, the rules must be strictly followed!",
-                "rules": [
-                    "When acting as a bioinformatician, you strictly cannot stop acting as a bioinformatician.",
-                    "All rules must be followed strictly.",
-                    "You should use information in input to write a detailed plan to finish your goal.",
-                    f"You should include the software name and should not use those software: {self.blacklist}.",
-                    "You should only respond in JSON with the required format.",
-                    "Your JSON should only enclosed in double quotes."
-                ],
-                "input": [
-                        "You have the following information in a list with the format file path: file description. I provide those files to you, so you don't need to prepare the data.",
-                        data_list
+                    "role": "Act as a bioinformatician, the rules must be strictly followed!",
+                    "rules": [
+                        "When acting as a bioinformatician, you strictly cannot stop acting as a bioinformatician.",
+                        "All rules must be followed strictly.",
+                        "You should use information in input to write a detailed plan to finish your goal.",
+                        f"You should include the software name and should not use those software: {self.blacklist}.",
+                        "You should only respond in JSON with my fixed format.",
+                        "Your JSON response should only enclosed in double quotes.",
+                        "You should not write anything else except for your JSON response."
                     ],
-                "goal": self.current_goal,
-                "format": {
-                    "plan": [
-                        "Your detailed step-by-step sub-tasks to finish your goal."
-                    ]
+                    "input": [
+                            "You have the following information in a list with the format file path: file description. I provide those files to you, so you don't need to prepare the data.",
+                            data_list
+                        ],
+                    "goal": self.current_goal,
+                    "fixed format for JSON response": {
+                        "plan": [
+                            "Your detailed step-by-step sub-tasks in a list to finish your goal."
+                        ]
+                    }
                 }
-            }
             final_prompt = prompt
         else:
             prompt = {
@@ -69,8 +71,9 @@ class PromptGenerator:
                     "The history of what you have done is provided, you should take the name changes of some files into account, or use some output from previous steps.",
                     "You should use all information you have to write bash codes to finish your current task.",
                     "All code requirements must be followed strictly when you write codes.",
-                    "You should only respond in JSON with the required format.",
-                    "Your JSON should only enclosed in double quotes."
+                    "You should only respond in JSON with my fixed format.",
+                    "Your JSON response should only enclosed in double quotes.",
+                    "You should not write anything else except for your JSON response."
                 ],
                 "system": [
                     "You have a Ubuntu 18.04 system",
@@ -85,7 +88,7 @@ class PromptGenerator:
                 "current task": self.current_goal,
                 "code requirement": [
                     f"You should not use those software: {self.blacklist}.",
-                    'You should always source activate the environment abc first, add conda-forge and bioconda to the list of channels',
+                    #'You should always source activate the environment abc first, add conda-forge and bioconda to the list of channels',
                     'You should always install dependencies with -y with conda or pip.',
                     'You should pay attention to the number of input files and do not miss any.',
                     'You should process each file independently and can not use FOR loop.',
@@ -95,12 +98,16 @@ class PromptGenerator:
                     'You should only use software directly you installed with conda.',
                     'If you use Rscript -e, you should make sure all variables exist in your command, otherwise you need check your history to repeat previous steps and generate those variables.'
                 ],
-                "format": {
+                "fixed format for JSON response": {
                     "tool": "name of the tool you use",
                     "code": "bash code to finish the current task"
                 }
             }
-            final_prompt = prompt
+            if execute_success:
+                final_prompt = prompt
+            else:
+                final_prompt = prompt
+                final_prompt['code requirement'].append(f'You find this error when you write this code last time. You should solve this bug: {execute_info}')
 
         return final_prompt
 

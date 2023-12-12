@@ -27,6 +27,7 @@ https://github.com/JoshuaChou2018/AutoBA/assets/25849209/3334417a-de59-421c-aa5e
 
 ## What's New
 
+- **[2023/12]** New feature: automated code reparing (ACR module) added, add llama2-chat backends
 - **[2023/11]** We updated the executor and released latest stable version (v0.0.2) and are working on automatic error feedback and code fixing.
 - **[2023/10]** We validated AutoBA on 40 conventional bioinformatics tasks and released our new pre-print at https://www.biorxiv.org/content/10.1101/2023.09.08.556814v2. More to come!
 - **[2023/09]** We integrated codellama 7b-Instruct, 13b-Instruct, 34b-Instruct, now users can choose to use chatgpt or local llm as backends, we currently recommend using chatgpt because tests have found that codellama is not as effective as chatgpt for complex bioinformatics tasks.
@@ -36,15 +37,17 @@ https://github.com/JoshuaChou2018/AutoBA/assets/25849209/3334417a-de59-421c-aa5e
 
 We're working hard to achieve more features, welcome to PRs!
 
-- [ ] Automatic error feedback and code fixing
+- [x] Automatic error feedback and code fixing
+- [x] Offer local LLMs (eg. code llama) as options for users
 - [ ] A UI-based yaml generator
 - [ ] User Forum
 - [ ] Pack into a conda package, simplify the installation process
-- [x] Get rid of GPT-4 backend, offer local LLMs (eg. code llama) as options for users
+- [ ] Provide docker version, simplify the installation process
 - [ ] ...
 
 ## Installation
 
+### Command line
 ```shell
 # (mandatory) for basic functions
 conda create -n abc python==3.10
@@ -52,14 +55,36 @@ conda activate abc
 conda install -c anaconda yaml -y
 pip install openai==0.27.6 pyyaml
 
-## for local llm
+# (optional) for local llm (llama2)
 cd src/codellama-main
 pip install -e .
-## download codellama model weights: 7b-Instruct,13b-Instruct,34b-Instruct, before this, users need to get the verification link from META
+
+## apply for a download link at https://ai.meta.com/resources/models-and-libraries/llama-downloads/
+## download codellama model weights: 7b-Instruct,13b-Instruct,34b-Instruct
+cd src/codellama-main
 bash download.sh
+## download llama2 model weights: 7B-chat,13B-chat,70B-chat
+cd src/llama-main
+bash download.sh
+## download hf version model weights
+git lfs install
+cd src/codellama-main
+git clone https://huggingface.co/codellama/CodeLlama-7b-Instruct-hf
+git clone https://huggingface.co/codellama/CodeLlama-13b-Instruct-hf
+git clone https://huggingface.co/codellama/CodeLlama-34b-Instruct-hf
 
 # (optional) for features under development: the yaml generator UI
 pip install plotly==5.14.1 dash==2.9.3 pandas==2.0.1 dash-mantine-components==0.12.1
+```
+
+### Conda
+```shell
+Comming soon...
+```
+
+### Docker
+```shell
+Comming soon...
 ```
 
 ## Get Started
@@ -93,8 +118,13 @@ or with local llm as backend (**not recommended for the moment, in development a
 - codellama-7bi: 7b-Instruct
 - codellama-13bi: 13b-Instruct
 - codellama-34bi: 34b-Instruct
+- llama2-7bc: llama-2-7b-chat
+- llama2-13bc: llama-2-13b-chat
+- llama2-70bc: llama-2-70b-chat
 
 ## Use Cases
+
+These cases below may have different ID numbers as those cases in our paper.
 
 ### Example 1: Bulk RNA-Seq
 
@@ -127,8 +157,13 @@ wget -P data/ ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR137/003/SRR1374923/SRR137492
 wget -P data/ ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR137/004/SRR1374924/SRR1374924.fastq.gz
 ```
 
+##### Analyze with AutoBA
+
 ```shell
-python app.py --config ./examples/case1.1/config.yaml
+python app.py --config ./examples/case1.1/config.yaml --openai YOUR_OPENAI_API --model gpt-4
+python app.py --config ./examples/case1.1/config.yaml --model codellama-7bi
+python app.py --config ./examples/case1.1/config.yaml --model codellama-13bi
+python app.py --config ./examples/case1.1/config.yaml --model codellama-34bi
 ```
 
 #### Case 1.2: Identify top5 down-regulated genes in HiGlu group

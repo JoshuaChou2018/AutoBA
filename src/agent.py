@@ -13,53 +13,10 @@ import torch.cuda
 from src.prompt import PromptGenerator
 from src.spinner import Spinner
 from src.local_llm import api_preload, api_generator
+from src.executor import CodeExecutor
 import openai
 import time
 import json
-import subprocess
-
-class CodeExecutor:
-    def __init__(self):
-        self.bash_code_path = None
-
-    def execute(self, bash_code_path):
-
-        self.bash_code_path = bash_code_path
-        with open(self.bash_code_path, 'r') as input_file:
-            bash_content = input_file.read()
-
-        self.bash_code_path_execute = self.bash_code_path + '.execute.sh'
-
-        # 打开新生成的 Bash 文件以供写入
-        with open(self.bash_code_path_execute, 'w') as output_file:
-            # 写入原始内容
-            output_file.write(bash_content)
-            # 在文件末尾添加打印特殊字符串的 Bash 命令
-            special_string = "K7pJhFbA3NqW"
-            output_file.write('\n')  # 确保在新行开始
-            output_file.write(f'echo "{special_string}"')
-
-        # 使用 subprocess 执行 Bash 文件，将输出捕获到一个字符串中
-        process = subprocess.Popen(['bash', self.bash_code_path_execute],
-                                            stdout=subprocess.PIPE,
-                                            stderr=subprocess.PIPE,
-                                            text=True)
-
-        # 实时读取输出并打印
-        while True:
-            output = process.stdout.readline()
-            if output == '' and process.poll() is not None:
-                break
-            if output:
-                print(output.strip())
-
-        # 等待命令执行完毕
-        process.communicate()
-
-        if process.returncode == 0:
-            return True, 'Success'
-        else:
-            return False, process.stderr
 
 class Agent:
     def __init__(self,initial_data_list, output_dir, initial_goal_description, model_engine, openai_api, execute = True, blacklist=''):
@@ -69,11 +26,14 @@ class Agent:
         self.update_data_lists = [_ for _ in initial_data_list]
         self.output_dir = output_dir
         self.update_data_lists.append(f'{output_dir}: all outputs should be stored under this dir')
-        self.generator = PromptGenerator(blacklist=blacklist)
         self.model_engine = model_engine
-        self.valid_model_engines = ['gpt-3.5', 'gpt-4', 'codellama-7bi', 'codellama-13bi', 'codellama-34bi']
+        self.generator = PromptGenerator(blacklist=blacklist, engine = self.model_engine)
+        self.valid_model_engines = ['gpt-3.5', 'gpt-4', 'codellama-7bi', 'codellama-13bi', 'codellama-34bi',
+                                    'llama2-7bc', 'llama2-13bc', 'llama2-70bc']
         self.global_round = 0
         self.execute = execute
+        self.execute_success = True
+        self.execute_info = None
         self.code_executor = CodeExecutor()
         openai.api_key = openai_api
 
@@ -82,7 +42,7 @@ class Agent:
             exit()
 
         # preload local model
-        if 'codellama' in self.model_engine:
+        if 'llama' in self.model_engine:
             import torch.distributed as dist
             os.environ['MASTER_ADDR'] = 'localhost'
             os.environ['MASTER_PORT'] = '5678'
@@ -95,12 +55,24 @@ class Agent:
                                     tokenizer_path='src/codellama-main/CodeLlama-7b-Instruct/tokenizer.model',
                                     max_seq_len=4096)
         elif self.model_engine == 'codellama-13bi':
-            self.local_llm_generator = api_preload(ckpt_dir='src/codellama-main/CodeLlama-13b-Instruct/',
+            self.local_llm_generator = api_preload(ckpt_dir='src/codellama-main/CodeLlama-13b-Instruct/one-gpu/',
                                     tokenizer_path='src/codellama-main/CodeLlama-13b-Instruct/tokenizer.model',
                                     max_seq_len=4096)
         elif self.model_engine == 'codellama-34bi':
-            self.local_llm_generator = api_preload(ckpt_dir='src/codellama-main/CodeLlama-34b-Instruct/',
+            self.local_llm_generator = api_preload(ckpt_dir='src/codellama-main/CodeLlama-34b-Instruct/one-gpu/',
                                     tokenizer_path='src/codellama-main/CodeLlama-34b-Instruct/tokenizer.model',
+                                    max_seq_len=4096)
+        elif self.model_engine == 'llama2-7bc':
+            self.local_llm_generator = api_preload(ckpt_dir='src/llama-main/llama-2-7b-chat/',
+                                    tokenizer_path='src/llama-main/tokenizer.model',
+                                    max_seq_len=4096)
+        elif self.model_engine == 'llama2-13bc':
+            self.local_llm_generator = api_preload(ckpt_dir='src/llama-main/llama-2-13b-chat/one-gpu/',
+                                    tokenizer_path='src/llama-main/tokenizer.model',
+                                    max_seq_len=4096)
+        elif self.model_engine == 'llama2-70bc':
+            self.local_llm_generator = api_preload(ckpt_dir='src/llama-main/llama-2-70b-chat/',
+                                    tokenizer_path='src/llama-main/tokenizer.model',
                                     max_seq_len=4096)
 
     def get_single_response(self, prompt):
@@ -140,7 +112,8 @@ class Agent:
             """
 
             response_message = response['choices'][0]['message']['content']
-        elif self.model_engine in ['codellama-7bi', 'codellama-13bi', 'codellama-34bi']:
+        elif self.model_engine in ['codellama-7bi', 'codellama-13bi', 'codellama-34bi',
+                                   'llama2-7bc', 'llama2-13bc', 'llama2-70bc']:
             instructions = [
                 [
                     {
@@ -189,11 +162,19 @@ class Agent:
         init_prompt = self.generator.get_prompt(
             data_list=self.initial_data_list,
             goal_description=self.initial_goal_description,
-            global_round=self.global_round)
+            global_round=self.global_round,
+            execute_success=self.execute_success,
+            execute_info=self.execute_info
+        )
 
         self.generator.format_user_prompt(init_prompt, self.global_round)
         with Spinner(f'\033[32m[AI Thinking...]\033[0m'):
             response_message = self.get_single_response(init_prompt)
+            if 'llama' in self.model_engine:
+                start_index = response_message.find("{")
+                end_index = response_message.rfind("}") + 1
+                # 提取 JSON 部分
+                response_message = response_message[start_index:end_index]
             while not self.valid_json_response(response_message):
                 print(f'\033[32m[Invalid Response, Waiting for 20s and Retrying...]\033[0m')
                 print(f'invalid response: {response_message}')
@@ -218,28 +199,57 @@ class Agent:
         # print('[DEBUG] ', self.tasks)
         while len(self.tasks) > 0:
             task = self.tasks.pop(0)
+
             prompt = self.generator.get_prompt(
                 data_list=self.update_data_lists,
                 goal_description=task,
-                global_round=self.global_round)
-            self.generator.format_user_prompt(prompt=prompt, global_round=self.global_round)
-            with Spinner(f'\033[32m[AI Thinking...]\033[0m'):
-                response_message = self.get_single_response(prompt)
-                while not self.valid_json_response(response_message):
-                    print(f'\033[32m[Invalid Response, Waiting for 20s and Retrying...]\033[0m')
-                    print(f'invalid response: {response_message}')
-                    if 'gpt' in self.model_engine:
-                        time.sleep(20)
-                    response_message = self.get_single_response(prompt)
-                response_message = json.load(open(f'{self.output_dir}/{self.global_round}_response.json'))
-            self.generator.format_ai_response(response_message)
+                global_round=self.global_round,
+                execute_success=self.execute_success,
+                execute_info=self.execute_info
+            )
 
-            # execute code
-            with Spinner(f'\033[32m[AI Executing codes...]\033[0m'):
-                print(f'\033[32m[Execute Code Start]\033[0m')
-                execute_success, execute_info = self.execute_code(response_message)
-                print('\033[32m[Execute Code Finish]\033[0m ', execute_success, execute_info)
-                #TODO
+            self.first_prompt = True
+            self.execute_success = False
+            while self.execute_success == False:
+
+                if self.first_prompt == False:
+                    prompt = self.generator.get_prompt(
+                        data_list=self.update_data_lists,
+                        goal_description=task,
+                        global_round=self.global_round,
+                        execute_success=self.execute_success,
+                        execute_info=self.execute_info
+                    )
+
+                self.generator.format_user_prompt(prompt=prompt, global_round=self.global_round)
+                with Spinner(f'\033[32m[AI Thinking...]\033[0m'):
+                    response_message = self.get_single_response(prompt)
+                    if 'llama' in self.model_engine:
+                        start_index = response_message.find("{")
+                        end_index = response_message.rfind("}") + 1
+                        # 提取 JSON 部分
+                        response_message = response_message[start_index:end_index]
+                    while not self.valid_json_response(response_message):
+                        print(f'\033[32m[Invalid Response, Waiting for 20s and Retrying...]\033[0m')
+                        print(f'invalid response: {response_message}')
+                        if 'gpt' in self.model_engine:
+                            time.sleep(20)
+                        response_message = self.get_single_response(prompt)
+                    response_message = json.load(open(f'{self.output_dir}/{self.global_round}_response.json'))
+                self.generator.format_ai_response(response_message)
+
+                # execute code
+                with Spinner(f'\033[32m[AI Executing codes...]\033[0m'):
+                    print(f'\033[32m[Execute Code Start]\033[0m')
+                    execute_success, execute_info = self.execute_code(response_message)
+                    self.execute_success = execute_success
+                    self.execute_info = execute_info
+                    print('\033[32m[Execute Code Finish]\033[0m', self.execute_success, self.execute_info)
+                    if self.execute_success:
+                        print(f'\033[32m[Execute Code Success!]\033[0m')
+                    else:
+                        print(f'\033[31m[Execute Code Failed!]\033[0m')
+                        self.first_prompt = False
 
             self.generator.add_history(task, self.global_round, self.update_data_lists, code=response_message['code'])
             self.global_round += 1
