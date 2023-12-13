@@ -52,12 +52,13 @@ We're working hard to achieve more features, welcome to PRs!
 # (mandatory) for basic functions
 conda create -n abc python==3.10
 conda activate abc
-conda install -c anaconda yaml -y
-pip install openai==0.27.6 pyyaml
+conda install -c anaconda yaml==0.2.5 -y
+pip install openai==0.27.6 pyyaml==6.0
 
 # (optional) for local llm (llama2)
 cd src/codellama-main
 pip install -e .
+pip install transformers==4.34.0.dev0
 
 ## apply for a download link at https://ai.meta.com/resources/models-and-libraries/llama-downloads/
 ## download codellama model weights: 7b-Instruct,13b-Instruct,34b-Instruct
