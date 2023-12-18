@@ -47,7 +47,8 @@ class PromptGenerator:
                         f"You should include the software name and should not use those software: {self.blacklist}.",
                         "You should only respond in JSON with my fixed format.",
                         "Your JSON response should only be enclosed in double quotes.",
-                        "You should not write anything else except for your JSON response."
+                        "You should not write anything else except for your JSON response.",
+                        "You should make your answer as detailed as possible."
                     ],
                     "input": [
                             "You have the following information in a list with the format file path: file description. I provide those files to you, so you don't need to prepare the data.",
@@ -88,16 +89,15 @@ class PromptGenerator:
                 "current task": self.current_goal,
                 "code requirement": [
                     f"You should not use that software: {self.blacklist}.",
-                    #'You should always source activate the environment abc first, add conda-forge and bioconda to the list of channels',
-                    'You should always install dependencies with -y with conda or pip.',
+                    'You should always source activate the environment abc first, add conda-forge and bioconda to the list of channels',
+                    'You should always install dependencies and softwares you need to use with conda or pip with -y.',
                     'You should pay attention to the number of input files and do not miss any.',
                     'You should process each file independently and can not use FOR loop.',
                     'You should use the path for all files according to input and history.',
                     'You should use the default values for all parameters that are not specified.',
                     'You should not repeat what you have done in history.',
-                    'You should only use software directly you installed with conda.',
+                    'You should only use software directly you installed with conda or pip.',
                     'If you use Rscript -e, you should make sure all variables exist in your command, otherwise, you need to check your history to repeat previous steps and generate those variables.',
-                    "You should make your answer as simple as possible."
                 ],
                 "fixed format for JSON response": {
                     "tool": "name of the tool you use",

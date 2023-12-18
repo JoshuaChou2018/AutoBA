@@ -58,7 +58,7 @@ pip install openai==0.27.6 pyyaml==6.0
 # (optional) for local llm (llama2)
 cd src/codellama-main
 pip install -e .
-pip install transformers==4.34.0.dev0
+pip install transformers==4.34.0
 
 ## apply for a download link at https://ai.meta.com/resources/models-and-libraries/llama-downloads/
 ## download codellama model weights: 7b-Instruct,13b-Instruct,34b-Instruct
