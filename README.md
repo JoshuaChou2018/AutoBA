@@ -27,6 +27,7 @@ https://github.com/JoshuaChou2018/AutoBA/assets/25849209/3334417a-de59-421c-aa5e
 
 ## What's New
 
+- **[2023/12]** We provided the latest docker version to simplify the installation process
 - **[2023/12]** New feature: automated code reparing (ACR module) added, add llama2-chat backends
 - **[2023/11]** We updated the executor and released latest stable version (v0.0.2) and are working on automatic error feedback and code fixing.
 - **[2023/10]** We validated AutoBA on 40 conventional bioinformatics tasks and released our new pre-print at https://www.biorxiv.org/content/10.1101/2023.09.08.556814v2. More to come!
@@ -39,10 +40,10 @@ We're working hard to achieve more features, welcome to PRs!
 
 - [x] Automatic error feedback and code fixing
 - [x] Offer local LLMs (eg. code llama) as options for users
+- [x] Provide docker version, simplify the installation process
 - [ ] A UI-based yaml generator
 - [ ] User Forum
 - [ ] Pack into a conda package, simplify the installation process
-- [ ] Provide docker version, simplify the installation process
 - [ ] ...
 
 ## Installation
@@ -54,9 +55,10 @@ conda create -n abc python==3.10
 conda activate abc
 conda install -c anaconda yaml==0.2.5 -y
 pip install openai==0.27.6 pyyaml==6.0
+git clone https://github.com/JoshuaChou2018/AutoBA.git
 
 # (optional) for local llm (llama2)
-cd src/codellama-main
+cd AutoBA/src/codellama-main
 pip install -e .
 pip install transformers==4.34.0
 
@@ -78,12 +80,30 @@ git clone https://huggingface.co/codellama/CodeLlama-34b-Instruct-hf
 pip install plotly==5.14.1 dash==2.9.3 pandas==2.0.1 dash-mantine-components==0.12.1
 ```
 
-### Conda
+### Docker
 ```shell
-Comming soon...
+# (mandatory) for basic functions
+docker pull joshuachou666/autoba:cuda12.2.2-cudnn8-devel-ubuntu22.04-autoba0.0.3
+docker run --rm --gpus all -it autoba:cuda12.2.2-cudnn8-devel-ubuntu22.04-autoba0.0.3 /bin/bash
+## Enter the shell in docker image
+conda activate abc
+cd AutoBA
 ```
 
-### Docker
+```shell
+# (optional) for using GPU in docker
+curl -s -L https://nvidia.github.io/nvidia-docker/gpgkey | \
+  sudo apt-key add -
+distribution=$(. /etc/os-release;echo $ID$VERSION_ID)
+curl -s -L https://nvidia.github.io/nvidia-docker/$distribution/nvidia-docker.list | \
+  sudo tee /etc/apt/sources.list.d/nvidia-docker.list
+sudo apt-get update
+sudo apt install -y nvidia-docker2
+sudo systemctl daemon-reload
+sudo systemctl restart docker
+```
+
+### Conda
 ```shell
 Comming soon...
 ```

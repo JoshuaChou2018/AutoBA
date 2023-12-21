@@ -14,9 +14,9 @@ class CodeExecutor:
         self.bash_code_path = None
         self.code_prefix = [
             'conda config --set show_channel_urls false',
-            #'conda activate abc',
-            #'conda config --add channels conda-forge',
-            #'conda config --add channels bioconda',
+            'conda activate abc',
+            'conda config --add channels conda-forge',
+            'conda config --add channels bioconda',
         ]
 
     def execute(self, bash_code_path):
