@@ -81,6 +81,9 @@ pip install plotly==5.14.1 dash==2.9.3 pandas==2.0.1 dash-mantine-components==0.
 ```
 
 ### Docker
+
+Please refer to https://docs.docker.com/engine/install to install Docker first.
+
 ```shell
 # (mandatory) for basic functions
 docker pull joshuachou666/autoba:cuda12.2.2-cudnn8-devel-ubuntu22.04-autoba0.0.3
