@@ -87,7 +87,7 @@ Please refer to https://docs.docker.com/engine/install to install Docker first.
 ```shell
 # (mandatory) for basic functions
 docker pull joshuachou666/autoba:cuda12.2.2-cudnn8-devel-ubuntu22.04-autoba0.0.3
-docker run --rm --gpus all -it autoba:cuda12.2.2-cudnn8-devel-ubuntu22.04-autoba0.0.3 /bin/bash
+docker run --rm --gpus all -it joshuachou666/autoba:cuda12.2.2-cudnn8-devel-ubuntu22.04-autoba0.0.3 /bin/bash
 ## Enter the shell in docker image
 conda activate abc
 cd AutoBA
