@@ -93,6 +93,7 @@ conda activate abc
 cd AutoBA
 ```
 
+If you get this error: **could not select device driver "" with capabilities: [[gpu]]**, then run the following codes:
 ```shell
 # (optional) for using GPU in docker
 curl -s -L https://nvidia.github.io/nvidia-docker/gpgkey | \
@@ -105,6 +106,8 @@ sudo apt install -y nvidia-docker2
 sudo systemctl daemon-reload
 sudo systemctl restart docker
 ```
+
+Try the previous codes again.
 
 ### Conda
 ```shell
