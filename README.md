@@ -27,9 +27,10 @@ https://github.com/JoshuaChou2018/AutoBA/assets/25849209/3334417a-de59-421c-aa5e
 
 ## What's New
 
-- **[2023/12]** We provided the latest docker version to simplify the installation process
-- **[2023/12]** New feature: automated code reparing (ACR module) added, add llama2-chat backends
-- **[2023/11]** We updated the executor and released latest stable version (v0.0.2) and are working on automatic error feedback and code fixing.
+- **[2023/12]** We added LLM support for the executor and the ACR module and released the milestone stable version `v0.1.0`
+- **[2023/12]** We provided the latest docker version to simplify the installation process.
+- **[2023/12]** New feature: automated code repairing (ACR module) added, add llama2-chat backends.
+- **[2023/11]** We updated the executor and released the latest stable version (v0.0.2) and are working on automatic error feedback and code fixing.
 - **[2023/10]** We validated AutoBA on 40 conventional bioinformatics tasks and released our new pre-print at https://www.biorxiv.org/content/10.1101/2023.09.08.556814v2. More to come!
 - **[2023/09]** We integrated codellama 7b-Instruct, 13b-Instruct, 34b-Instruct, now users can choose to use chatgpt or local llm as backends, we currently recommend using chatgpt because tests have found that codellama is not as effective as chatgpt for complex bioinformatics tasks.
 - **[2023/09]** We are pleased to announce the official release of AutoBA's latest version `v0.0.1`! 🎉🎉🎉
@@ -40,8 +41,8 @@ We're working hard to achieve more features, welcome to PRs!
 
 - [x] Automatic error feedback and code fixing
 - [x] Offer local LLMs (eg. code llama) as options for users
-- [x] Provide docker version, simplify the installation process
-- [ ] A UI-based yaml generator
+- [x] Provide a docker version, simplify the installation process
+- [ ] A UI-based YAML generator
 - [ ] User Forum
 - [ ] Pack into a conda package, simplify the installation process
 - [ ] ...
@@ -122,7 +123,7 @@ Comming soon...
 
 Under `./example`, `config.yaml` defines your files and goals. Defining `data_list`, `output_dir` and `goal_description`
 in `config.yaml` is mandatory before running `app.py`. **Absolute paths rather than relative paths are recommended for all file paths defined in `config.yaml`**.
- 
+
 
 `app.py` run this file to start.
 
