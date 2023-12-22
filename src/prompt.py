@@ -45,7 +45,7 @@ class PromptGenerator:
                         "All rules must be followed strictly.",
                         "You should use information in input to write a detailed plan to finish your goal.",
                         f"You should include the software name and should not use those software: {self.blacklist}.",
-                        "You should only respond in JSON with my fixed format.",
+                        "You should only respond in JSON format with my fixed format.",
                         "Your JSON response should only be enclosed in double quotes.",
                         "You should not write anything else except for your JSON response.",
                         "You should make your answer as detailed as possible."
@@ -72,9 +72,10 @@ class PromptGenerator:
                     "The history of what you have done is provided, you should take the name changes of some files into account, or use some output from previous steps.",
                     "You should use all information you have to write bash codes to finish your current task.",
                     "All code requirements must be followed strictly when you write codes.",
-                    "You should only respond in JSON with my fixed format.",
+                    "You should only respond in JSON format with my fixed format.",
                     "Your JSON response should only be enclosed in double quotes.",
-                    "You should make your answer as simple as possible."
+                    "You should make your answer as simple as possible.",
+                    "You should not write anything else except for your JSON response."
                 ],
                 "system": [
                     "You have a Ubuntu 18.04 system",
@@ -98,6 +99,7 @@ class PromptGenerator:
                     'You should not repeat what you have done in history.',
                     'You should only use software directly you installed with conda or pip.',
                     'If you use Rscript -e, you should make sure all variables exist in your command, otherwise, you need to check your history to repeat previous steps and generate those variables.',
+                    "You should not write anything else except for your JSON response."
                 ],
                 "fixed format for JSON response": {
                     "tool": "name of the tool you use",
