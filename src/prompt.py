@@ -27,6 +27,27 @@ class PromptGenerator:
                                   "gsea: you should substitute gsea-cli.sh with gsea-cli, you should use -set_max, -set_min and -zip_report false"
                                 ]
 
+    def get_executor_prompt(self, executor_info):
+        prompt = {
+            "task": "I executed a Bash script and obtained log output detailing its execution. Kindly assist me in assessing the success of the script. If it encounters any failures, please aid in summarizing the reasons for the failure and propose modifications to the code.",
+            "rules": [
+                "You should only respond in JSON format with my fixed format.",
+                "Your JSON response should only be enclosed in double quotes.",
+                "No such file or directory is error."
+                "You should not write anything else except for your JSON response.",
+                "You should make your answer as detailed as possible."
+            ],
+            "log output": [
+                executor_info
+            ],
+            "fixed format for JSON response": {
+                "stat": "0 or 1, 0 indicates failure and 1 indicates success",
+                "info": "None or your summary and suggestion."
+            }
+        }
+        final_prompt = prompt
+        return final_prompt
+
     def get_prompt(self, data_list, goal_description, global_round, execute_success=True, execute_info=None):
         """
 
@@ -90,7 +111,8 @@ class PromptGenerator:
                 "current task": self.current_goal,
                 "code requirement": [
                     f"You should not use that software: {self.blacklist}.",
-                    'You should always source activate the environment abc first, add conda-forge and bioconda to the list of channels',
+                    #'You should always source activate the environment abc first',
+                    'You should always add conda-forge and bioconda to the list of channels',
                     'You should always install dependencies and softwares you need to use with conda or pip with -y.',
                     'You should pay attention to the number of input files and do not miss any.',
                     'You should process each file independently and can not use FOR loop.',
@@ -110,7 +132,7 @@ class PromptGenerator:
                 final_prompt = prompt
             else:
                 final_prompt = prompt
-                final_prompt['code requirement'].append(f'You find this error when you write this code last time. You should solve this bug: {execute_info}')
+                final_prompt['code requirement'].append(f'You got this error when you write this code last time. You should solve this bug: {execute_info}')
 
         return final_prompt
 

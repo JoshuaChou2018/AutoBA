@@ -13,8 +13,8 @@ class CodeExecutor:
     def __init__(self):
         self.bash_code_path = None
         self.code_prefix = [
+            'which python',
             'conda config --set show_channel_urls false',
-            'conda activate abc',
             'conda config --add channels conda-forge',
             'conda config --add channels bioconda',
         ]
@@ -34,9 +34,6 @@ class CodeExecutor:
             # 写入原始内容
             output_file.write(bash_content)
             output_file.write('\n')  # 确保在新行开始
-            # 在文件末尾添加打印特殊字符串的 Bash 命令
-            special_string = "K7pJhFbA3NqW"
-            output_file.write(f'echo "{special_string}"')
 
         # 使用 subprocess 执行 Bash 文件，将输出捕获到一个字符串中
         process = subprocess.Popen(['bash', '-i', '-e', self.bash_code_path_execute],
@@ -51,11 +48,17 @@ class CodeExecutor:
                 break
             print(f'[stdout] {output.strip()}')
 
-        stderr = [_ for _ in process.stderr.readlines() if 'warning' not in _.lower() and _!='\n']
+
+        stderr = []
+        for _ in process.stderr.readlines():
+            if 'EnvironmentNameNotFound' in _ or '\n' == _:
+                pass
+            else:
+                print(f"[stderr] {_}", end='')
+                stderr.append(_)
+
         stderr = ''.join(stderr)
         process.communicate()
 
-        if len(stderr) == 0:
-            return True, 'Success'
-        else:
-            return False, stderr
+        executor_info = stderr
+        return executor_info

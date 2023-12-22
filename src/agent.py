@@ -140,6 +140,20 @@ class Agent:
             return False
         return True
 
+    def valid_json_response_executor(self, response_message):
+        if not os.path.isdir(f'{self.output_dir}'):
+            os.makedirs(f'{self.output_dir}')
+        try:
+            with open(f'{self.output_dir}/executor_response.json', 'w') as w:
+                json.dump(eval(response_message), w)
+            tmp_data = json.load(open(f'{self.output_dir}/executor_response.json'))
+            if tmp_data['stat'] not in ['0', '1']:
+                return False
+        except:
+            print('[INVALID RESSPONSE]\n', response_message)
+            return False
+        return True
+
     def process_tasks(self, response_message):
         self.tasks = response_message['plan']
 
@@ -150,9 +164,23 @@ class Agent:
             with open(f'{self.output_dir}/{self.global_round}.sh', 'w') as w:
                 w.write(response_message['code'])
             if self.execute:
-                execute_statu, execute_info = self.code_executor.execute(bash_code_path=f'{self.output_dir}/{self.global_round}.sh')
+                executor_info = self.code_executor.execute(bash_code_path=f'{self.output_dir}/{self.global_round}.sh')
+                executor_response_message = self.get_single_response(self.generator.get_executor_prompt(executor_info=executor_info))
+                print('[CHECKING EXECUTION RESULTS]\n')
+                if 'llama' in self.model_engine:
+                    start_index = executor_response_message.find("{")
+                    end_index = executor_response_message.rfind("}") + 1
+                    # 提取 JSON 部分
+                    executor_response_message = executor_response_message[start_index:end_index]
+                while not self.valid_json_response_executor(executor_response_message):
+                    if 'gpt' in self.model_engine:
+                        time.sleep(20)
+                    executor_response_message = self.get_single_response(
+                        self.generator.get_executor_prompt(executor_info=executor_info))
+                executor_response_message = json.load(open(f'{self.output_dir}/executor_response.json'))
+                execute_statu, execute_info = executor_response_message['stat'], executor_response_message['info']
                 #os.system(f'bash {self.output_dir}/{self.global_round}.sh')
-                return execute_statu, execute_info
+                return bool(int(execute_statu)), execute_info
             return True, 'Success without executing'
         except Exception as e:
             return False, e
