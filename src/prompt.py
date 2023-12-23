@@ -68,6 +68,7 @@ class PromptGenerator:
                         f"You should include the software name and should not use those software: {self.blacklist}.",
                         "You should only respond in JSON format with my fixed format.",
                         "Your JSON response should only be enclosed in double quotes.",
+                        "You should not write loading data as a separate step.",
                         "You should not write anything else except for your JSON response.",
                         "You should make your answer as detailed as possible."
                     ],
@@ -100,7 +101,7 @@ class PromptGenerator:
                 ],
                 "system": [
                     "You have a Ubuntu 18.04 system",
-                    "You have a conda environment named abc",
+                    "You have a conda environment named abc_runtime",
                     "You do not have any other software installed"
                 ],
                 "input": [
@@ -111,7 +112,8 @@ class PromptGenerator:
                 "current task": self.current_goal,
                 "code requirement": [
                     f"You should not use that software: {self.blacklist}.",
-                    #'You should always source activate the environment abc first',
+                    "You don't need to create and activate the conda environment abc_runtime.",
+                    #'You should always source activate the environment abc_runtime first',
                     'You should always add conda-forge and bioconda to the list of channels',
                     'You should always install dependencies and softwares you need to use with conda or pip with -y.',
                     'You should pay attention to the number of input files and do not miss any.',

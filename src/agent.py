@@ -165,20 +165,23 @@ class Agent:
                 w.write(response_message['code'])
             if self.execute:
                 executor_info = self.code_executor.execute(bash_code_path=f'{self.output_dir}/{self.global_round}.sh')
-                executor_response_message = self.get_single_response(self.generator.get_executor_prompt(executor_info=executor_info))
-                print('[CHECKING EXECUTION RESULTS]\n')
-                if 'llama' in self.model_engine:
-                    start_index = executor_response_message.find("{")
-                    end_index = executor_response_message.rfind("}") + 1
-                    # 提取 JSON 部分
-                    executor_response_message = executor_response_message[start_index:end_index]
-                while not self.valid_json_response_executor(executor_response_message):
-                    if 'gpt' in self.model_engine:
-                        time.sleep(20)
-                    executor_response_message = self.get_single_response(
-                        self.generator.get_executor_prompt(executor_info=executor_info))
-                executor_response_message = json.load(open(f'{self.output_dir}/executor_response.json'))
-                execute_statu, execute_info = executor_response_message['stat'], executor_response_message['info']
+                if len(executor_info) == 0:
+                    execute_statu, execute_info = True, 'No error message'
+                else:
+                    executor_response_message = self.get_single_response(self.generator.get_executor_prompt(executor_info=executor_info))
+                    print('[CHECKING EXECUTION RESULTS]\n')
+                    if 'llama' in self.model_engine:
+                        start_index = executor_response_message.find("{")
+                        end_index = executor_response_message.rfind("}") + 1
+                        # 提取 JSON 部分
+                        executor_response_message = executor_response_message[start_index:end_index]
+                    while not self.valid_json_response_executor(executor_response_message):
+                        if 'gpt' in self.model_engine:
+                            time.sleep(20)
+                        executor_response_message = self.get_single_response(
+                            self.generator.get_executor_prompt(executor_info=executor_info))
+                    executor_response_message = json.load(open(f'{self.output_dir}/executor_response.json'))
+                    execute_statu, execute_info = executor_response_message['stat'], executor_response_message['info']
                 #os.system(f'bash {self.output_dir}/{self.global_round}.sh')
                 return bool(int(execute_statu)), execute_info
             return True, 'Success without executing'

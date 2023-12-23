@@ -13,10 +13,14 @@ class CodeExecutor:
     def __init__(self):
         self.bash_code_path = None
         self.code_prefix = [
+            'conda create -n abc_runtime python==3.10 -y',
+            'source activate abc_runtime',
             'which python',
             'conda config --set show_channel_urls false',
             'conda config --add channels conda-forge',
             'conda config --add channels bioconda',
+        ]
+        self.code_postfix = [
         ]
 
     def execute(self, bash_code_path):
@@ -34,6 +38,8 @@ class CodeExecutor:
             # 写入原始内容
             output_file.write(bash_content)
             output_file.write('\n')  # 确保在新行开始
+            for code in self.code_postfix:
+                output_file.write(code + '\n')
 
         # 使用 subprocess 执行 Bash 文件，将输出捕获到一个字符串中
         process = subprocess.Popen(['bash', '-i', '-e', self.bash_code_path_execute],
