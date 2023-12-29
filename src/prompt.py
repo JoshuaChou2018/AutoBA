@@ -115,7 +115,7 @@ class PromptGenerator:
                     "You don't need to create and activate the conda environment abc_runtime.",
                     #'You should always source activate the environment abc_runtime first',
                     'You should always add conda-forge and bioconda to the list of channels',
-                    'You should always install dependencies and softwares you need to use with conda or pip with -y.',
+                    'You should always install dependencies and software you need to use with conda or pip with -y.',
                     'You should pay attention to the number of input files and do not miss any.',
                     'You should process each file independently and can not use FOR loop.',
                     'You should use the path for all files according to input and history.',

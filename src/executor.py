@@ -63,6 +63,9 @@ class CodeExecutor:
                 print(f"[stderr] {_}", end='')
                 stderr.append(_)
 
+        if len(stderr) > 30:
+            stderr = stderr[-30:]
+
         stderr = ''.join(stderr)
         process.communicate()
 
