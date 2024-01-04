@@ -27,7 +27,7 @@ https://github.com/JoshuaChou2018/AutoBA/assets/25849209/3334417a-de59-421c-aa5e
 
 ## What's New
 
-- **[2023/12]** We added LLM support for the executor and the ACR module and released the milestone stable version `v0.1.0`
+- **[2023/12]** We added LLM support for the executor and the ACR module and released the milestone stable version `v0.1.1`
 - **[2023/12]** We provided the latest docker version to simplify the installation process.
 - **[2023/12]** New feature: automated code repairing (ACR module) added, add llama2-chat backends.
 - **[2023/11]** We updated the executor and released the latest stable version (v0.0.2) and are working on automatic error feedback and code fixing.
