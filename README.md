@@ -13,11 +13,13 @@
                   www.joshuachou.ink
 ```
 
-**Automated Bioinformatics Analysis via AutoBA.** 
+**An AI Agent for Fully Automated Multi-omic Analyses**.
+
+(**Automated Bioinformatics Analysis via AutoBA** )
 
 King Abdullah University of Science and Technology, KAUST
 
-<a href='media/AutoBA_v5_manuscript.pdf'><img src='https://img.shields.io/badge/Paper-PDF-red'></a>
+<a href='media/AutoBA_v7_manuscript.pdf'><img src='https://img.shields.io/badge/Paper-PDF-red'></a>
 
 
 
