@@ -392,14 +392,19 @@ Thank you for your unwavering support and enthusiasm, and let's work together to
 If you find this project useful in your research, please consider citing:
 
 ```bibtex
-@misc{zhou2023automated,
-      title={Automated Bioinformatics Analysis via AutoBA}, 
-      author={Juexiao Zhou and Bin Zhang and Xiuying Chen and Haoyang Li and Xiaopeng Xu and Siyuan Chen and Xin Gao},
-      year={2023},
-      eprint={2309.03242},
-      archivePrefix={arXiv},
-      primaryClass={q-bio.GN}
+@article {Zhou2023.09.08.556814,
+	author = {Juexiao Zhou and Bin Zhang and Xiuying Chen and Haoyang Li and Xiaopeng Xu and Siyuan Chen and Wenjia He and Chencheng Xu and Xin Gao},
+	title = {An AI Agent for Fully Automated Multi-omic Analyses},
+	elocation-id = {2023.09.08.556814},
+	year = {2024},
+	doi = {10.1101/2023.09.08.556814},
+	publisher = {Cold Spring Harbor Laboratory},
+	abstract = {With the fast-growing and evolving omics data, the demand for streamlined and adaptable tools to handle the bioinformatics analysis continues to grow. In response to this need, we introduce Automated Bioinformatics Analysis (AutoBA), an autonomous AI agent designed explicitly for fully automated multi-omic analyses based on large language models. AutoBA simplifies the analytical process by requiring minimal user input while delivering detailed step-by-step plans for various bioinformatics tasks. Through rigorous validation by expert bioinformaticians, AutoBA{\textquoteright}s robustness and adaptability are affirmed across a diverse range of omics analysis cases, including whole genome/exome sequencing (WGS/WES), chromatin immunoprecipitation assays with sequencing (ChIP-seq), RNA sequencing (RNA-seq), single-cell RNA-seq, spatial transcriptomics and so on. AutoBA{\textquoteright}s unique capacity to self-design analysis processes based on input data variations further underscores its versatility. Compared with online bioinformatic services, AutoBA offers multiple LLM backends, with options for both online and local usage, prioritizing data security and user privacy. Moreover, different from the predefined pipeline, AutoBA has adaptability in sync with emerging bioinformatics tools. Overall, AutoBA represents an advanced and convenient tool, offering robustness and adaptability for conventional multi-omic analyses.Competing Interest StatementThe authors have declared no competing interest.},
+	URL = {https://www.biorxiv.org/content/early/2024/01/05/2023.09.08.556814},
+	eprint = {https://www.biorxiv.org/content/early/2024/01/05/2023.09.08.556814.full.pdf},
+	journal = {bioRxiv}
 }
+
 ```
 
 ## License
