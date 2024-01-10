@@ -116,7 +116,7 @@ Try the previous codes again.
 
 ### Conda
 ```shell
-Comming soon...
+Coming soon...
 ```
 
 ## Get Started
