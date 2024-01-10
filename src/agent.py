@@ -28,8 +28,9 @@ class Agent:
         self.update_data_lists.append(f'{output_dir}: all outputs should be stored under this dir')
         self.model_engine = model_engine
         self.generator = PromptGenerator(blacklist=blacklist, engine = self.model_engine)
-        self.valid_model_engines = ['gpt-3.5', 'gpt-4', 'codellama-7bi', 'codellama-13bi', 'codellama-34bi',
+        self.valid_model_engines = ['gpt-3.5-turbo', 'gpt-3.5-turbo-1106', 'gpt-4', 'codellama-7bi', 'codellama-13bi', 'codellama-34bi',
                                     'llama2-7bc', 'llama2-13bc', 'llama2-70bc']
+        self.gpt_model_engines = ['gpt-3.5-turbo', 'gpt-3.5-turbo-1106', 'gpt-4']
         self.global_round = 0
         self.execute = execute
         self.execute_success = True
@@ -78,7 +79,7 @@ class Agent:
     def get_single_response(self, prompt):
 
         # use openai
-        if self.model_engine in ['gpt-3.5', 'gpt-4']:
+        if self.model_engine in self.gpt_model_engines:
             response = openai.ChatCompletion.create(
                 model=self.model_engine,
                   messages=[

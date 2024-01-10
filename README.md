@@ -29,6 +29,7 @@ https://github.com/JoshuaChou2018/AutoBA/assets/25849209/3334417a-de59-421c-aa5e
 
 ## What's New
 
+- **[2024/01]** Updated the support for ChatGPT-3.5 (gpt-3.5-turbo: openai chatgpt-3.5, 4,096 tokens and gpt-3.5-turbo-1106: openai chatgpt-3.5, 16,385 tokens)
 - **[2023/12]** We added LLM support for the executor and the ACR module and released the milestone stable version `v0.1.1`
 - **[2023/12]** We provided the latest docker version to simplify the installation process.
 - **[2023/12]** New feature: automated code repairing (ACR module) added, add llama2-chat backends.
@@ -147,7 +148,8 @@ or with local llm as backend (**not recommended for the moment, in development a
 
 ### Model Zoo
 
-- gpt-3.5: openai chatgpt-3.5
+- gpt-3.5-turbo: openai chatgpt-3.5, 4,096 tokens
+- gpt-3.5-turbo-1106: openai chatgpt-3.5, 16,385 tokens
 - gpt-4: openai chatgpt-4 (default)
 - codellama-7bi: 7b-Instruct
 - codellama-13bi: 13b-Instruct
