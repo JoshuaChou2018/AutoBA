@@ -29,7 +29,8 @@ https://github.com/JoshuaChou2018/AutoBA/assets/25849209/3334417a-de59-421c-aa5e
 
 ## What's New
 
-- **[2024/01]** Updated the support for ChatGPT-4 (gpt-4-32k: Currently points to gpt-4-32k-0613, 32,768 tokens, Up to Sep 2021; gpt-4-1106-preview: GPT-4 Turbo, 128,000 tokens, Up to Apr 2023)
+- **[2024/01]** Updated JSON mode for gpt-3.5-turbo-1106, gpt-4-1106-preview, the output of these two models will be more stable
+- **[2024/01]** Updated the support for ChatGPT-4 (gpt-4-32k-0613: Currently points to gpt-4-32k-0613, 32,768 tokens, Up to Sep 2021; gpt-4-1106-preview: GPT-4 Turbo, 128,000 tokens, Up to Apr 2023)
 - **[2024/01]** Updated the support for ChatGPT-3.5 (gpt-3.5-turbo: openai chatgpt-3.5, 4,096 tokens and gpt-3.5-turbo-1106: openai chatgpt-3.5, 16,385 tokens)
 - **[2023/12]** We added LLM support for the executor and the ACR module and released the milestone stable version `v0.1.1`
 - **[2023/12]** We provided the latest docker version to simplify the installation process.
@@ -152,7 +153,7 @@ or with local llm as backend (**not recommended for the moment, in development a
 - gpt-3.5-turbo-1106: Updated GPT 3.5 Turbo, 16,385 tokens, Up to Sep 2021
 - gpt-3.5-turbo: Currently points to gpt-3.5-turbo-0613, 4,096 tokens, Up to Sep 2021
 - gpt-4: Currently points to gpt-4-0613, 8,192 tokens, Up to Sep 2021 (default)
-- gpt-4-32k: Currently points to gpt-4-32k-0613, 32,768 tokens, Up to Sep 2021
+- gpt-4-32k-0613: Currently points to gpt-4-32k-0613, 32,768 tokens, Up to Sep 2021
 - gpt-4-1106-preview: GPT-4 Turbo, 128,000 tokens, Up to Apr 2023
 - codellama-7bi: 7b-Instruct
 - codellama-13bi: 13b-Instruct

@@ -30,10 +30,10 @@ class Agent:
         self.generator = PromptGenerator(blacklist=blacklist, engine = self.model_engine)
         self.local_model_engines = ['codellama-7bi', 'codellama-13bi', 'codellama-34bi',
                                     'llama2-7bc', 'llama2-13bc', 'llama2-70bc']
-        self.gpt_model_engines = ['gpt-3.5-turbo', 
+        self.gpt_model_engines = ['gpt-3.5-turbo',
                                   'gpt-3.5-turbo-1106',
                                   'gpt-4',
-                                  'gpt-4-32k',
+                                  'gpt-4-32k-0613',
                                   'gpt-4-1106-preview']
         self.valid_model_engines = self.local_model_engines + self.gpt_model_engines
         self.global_round = 0
@@ -85,13 +85,24 @@ class Agent:
 
         # use openai
         if self.model_engine in self.gpt_model_engines:
-            response = openai.ChatCompletion.create(
-                model=self.model_engine,
-                  messages=[
-                    {"role": "user", "content": str(prompt)}],
-                max_tokens=1024,
-                temperature=0,
-            )
+
+            if self.model_engine in ['gpt-3.5-turbo-1106', 'gpt-4-1106-preview']:
+                response = openai.ChatCompletion.create(
+                    model=self.model_engine,
+                    response_format={"type": "json_object"},
+                    messages=[
+                        {"role": "user", "content": str(prompt)}],
+                    max_tokens=1024,
+                    temperature=0,
+                )
+            else:
+                response = openai.ChatCompletion.create(
+                    model=self.model_engine,
+                      messages=[
+                        {"role": "user", "content": str(prompt)}],
+                    max_tokens=1024,
+                    temperature=0,
+                )
 
             """
             {
