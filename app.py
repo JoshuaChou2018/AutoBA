@@ -33,19 +33,10 @@ if __name__ == '__main__':
                         help='openai api',
                         default='SET_YOUR_OPENAI_API')
     parser.add_argument('--model',
-                        help='model options: gpt-3.5-turbo (requires openai api), '
-                             'gpt-3.5-turbo-1106 (requires openai api), '
-                             'gpt-4 (requires openai api), '
-                             'gpt-4-32k (requires openai api), '
-                             'codellama-7bi, '
-                             'codellama-13bi, '
-                             'codellama-34bi,'
-                             'llama2-7bc, '
-                             'llama2-13bc, '
-                             'llama2-70bc',
+                        help='name of model engine, e.g. gpt-4, please refer to model zoo',
                         default='gpt-4')
     parser.add_argument('--execute',
-                        help='execute code or only writing codes',
+                        help='execute code or only write codes',
                         default=False,
                         type=bool)
     parser.add_argument('--blacklist',

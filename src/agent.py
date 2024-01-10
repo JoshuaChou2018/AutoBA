@@ -30,7 +30,11 @@ class Agent:
         self.generator = PromptGenerator(blacklist=blacklist, engine = self.model_engine)
         self.local_model_engines = ['codellama-7bi', 'codellama-13bi', 'codellama-34bi',
                                     'llama2-7bc', 'llama2-13bc', 'llama2-70bc']
-        self.gpt_model_engines = ['gpt-3.5-turbo', 'gpt-3.5-turbo-1106', 'gpt-4', 'gpt-4-32k']
+        self.gpt_model_engines = ['gpt-3.5-turbo', 
+                                  'gpt-3.5-turbo-1106',
+                                  'gpt-4',
+                                  'gpt-4-32k',
+                                  'gpt-4-1106-preview']
         self.valid_model_engines = self.local_model_engines + self.gpt_model_engines
         self.global_round = 0
         self.execute = execute
@@ -114,8 +118,7 @@ class Agent:
             """
 
             response_message = response['choices'][0]['message']['content']
-        elif self.model_engine in ['codellama-7bi', 'codellama-13bi', 'codellama-34bi',
-                                   'llama2-7bc', 'llama2-13bc', 'llama2-70bc']:
+        elif self.model_engine in self.local_model_engines:
             instructions = [
                 [
                     {
