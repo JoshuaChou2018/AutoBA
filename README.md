@@ -61,12 +61,12 @@ conda create -n abc python==3.10
 conda activate abc
 conda install -c anaconda yaml==0.2.5 -y
 pip install openai==0.27.6 pyyaml==6.0
+pip install transformers==4.34.0
 git clone https://github.com/JoshuaChou2018/AutoBA.git
 
 # (optional) for local llm (llama2)
 cd AutoBA/src/codellama-main
 pip install -e .
-pip install transformers==4.34.0
 
 ## apply for a download link at https://ai.meta.com/resources/models-and-libraries/llama-downloads/
 ## download codellama model weights: 7b-Instruct,13b-Instruct,34b-Instruct
