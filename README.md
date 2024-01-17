@@ -17,6 +17,8 @@
 
 (**Automated Bioinformatics Analysis via AutoBA** )
 
+[Juexiao Zhou](https://www.joshuachou.ink/about/), Bin Zhang, Xiuying Chen, Haoyang Li, Xiaopeng Xu, Siyuan Chen, Wenjia He, Chencheng Xu, Xin Gao
+
 King Abdullah University of Science and Technology, KAUST
 
 <a href='media/AutoBA_v7_manuscript.pdf'><img src='https://img.shields.io/badge/Paper-PDF-red'></a>
