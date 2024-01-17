@@ -15,7 +15,7 @@
 
 **An AI Agent for Fully Automated Multi-omic Analyses**.
 
-(**Automated Bioinformatics Analysis via AutoBA** )
+(**Automated Bioinformatics Analysis via AutoBA**)
 
 [Juexiao Zhou](https://www.joshuachou.ink/about/), Bin Zhang, Xiuying Chen, Haoyang Li, Xiaopeng Xu, Siyuan Chen, Wenjia He, Chencheng Xu, Xin Gao
 
