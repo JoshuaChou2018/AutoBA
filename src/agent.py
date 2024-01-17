@@ -19,7 +19,7 @@ import time
 import json
 
 class Agent:
-    def __init__(self,initial_data_list, output_dir, initial_goal_description, model_engine, openai_api, execute = True, blacklist=''):
+    def __init__(self,initial_data_list, output_dir, initial_goal_description, model_engine, openai_api, execute = True, blacklist='', gui_mode=False):
         self.initial_data_list = initial_data_list
         self.initial_goal_description = initial_goal_description
         self.tasks = []
@@ -46,6 +46,7 @@ class Agent:
         self.execute_success = True
         self.execute_info = None
         self.code_executor = CodeExecutor()
+        self.gui_mode = gui_mode
         openai.api_key = openai_api
 
         if self.model_engine not in self.valid_model_engines:
@@ -219,8 +220,9 @@ class Agent:
             execute_info=self.execute_info
         )
 
-        self.generator.format_user_prompt(init_prompt, self.global_round)
-        with Spinner(f'\033[32m[AI Thinking...]\033[0m'):
+        INFO_STR_USER = self.generator.format_user_prompt(init_prompt, self.global_round, self.gui_mode)
+        if self.gui_mode:
+            print('[AI Thinking...]')
             response_message = self.get_single_response(init_prompt)
             if 'llama' in self.model_engine:
                 start_index = response_message.find("{")
@@ -228,13 +230,29 @@ class Agent:
                 # 提取 JSON 部分
                 response_message = response_message[start_index:end_index]
             while not self.valid_json_response(response_message):
-                print(f'\033[32m[Invalid Response, Waiting for 20s and Retrying...]\033[0m')
+                print(f'[Invalid Response, Waiting for 20s and Retrying...]')
                 print(f'invalid response: {response_message}')
                 if 'gpt' in self.model_engine:
                     time.sleep(20)
                 response_message = self.get_single_response(init_prompt)
             response_message = json.load(open(f'{self.output_dir}/{self.global_round}_response.json'))
-        self.generator.format_ai_response(response_message)
+        else:
+            with Spinner(f'\033[32m[AI Thinking...]\033[0m'):
+                response_message = self.get_single_response(init_prompt)
+                if 'llama' in self.model_engine:
+                    start_index = response_message.find("{")
+                    end_index = response_message.rfind("}") + 1
+                    # 提取 JSON 部分
+                    response_message = response_message[start_index:end_index]
+                while not self.valid_json_response(response_message):
+                    print(f'\033[32m[Invalid Response, Waiting for 20s and Retrying...]\033[0m')
+                    print(f'invalid response: {response_message}')
+                    if 'gpt' in self.model_engine:
+                        time.sleep(20)
+                    response_message = self.get_single_response(init_prompt)
+                response_message = json.load(open(f'{self.output_dir}/{self.global_round}_response.json'))
+        INFO_STR_AI = self.generator.format_ai_response(response_message, self.gui_mode)
+
         # process tasks
         self.process_tasks(response_message)
         self.generator.set_tasks(self.tasks)
@@ -273,8 +291,9 @@ class Agent:
                         execute_info=self.execute_info
                     )
 
-                self.generator.format_user_prompt(prompt=prompt, global_round=self.global_round)
-                with Spinner(f'\033[32m[AI Thinking...]\033[0m'):
+                INFO_STR_USER = self.generator.format_user_prompt(prompt, self.global_round, self.gui_mode)
+                if self.gui_mode:
+                    print('[AI Thinking...]')
                     response_message = self.get_single_response(prompt)
                     if 'llama' in self.model_engine:
                         start_index = response_message.find("{")
@@ -282,26 +301,56 @@ class Agent:
                         # 提取 JSON 部分
                         response_message = response_message[start_index:end_index]
                     while not self.valid_json_response(response_message):
-                        print(f'\033[32m[Invalid Response, Waiting for 20s and Retrying...]\033[0m')
+                        print(f'[Invalid Response, Waiting for 20s and Retrying...]')
                         print(f'invalid response: {response_message}')
                         if 'gpt' in self.model_engine:
                             time.sleep(20)
                         response_message = self.get_single_response(prompt)
                     response_message = json.load(open(f'{self.output_dir}/{self.global_round}_response.json'))
-                self.generator.format_ai_response(response_message)
+                else:
+                    with Spinner(f'\033[32m[AI Thinking...]\033[0m'):
+                        response_message = self.get_single_response(prompt)
+                        if 'llama' in self.model_engine:
+                            start_index = response_message.find("{")
+                            end_index = response_message.rfind("}") + 1
+                            # 提取 JSON 部分
+                            response_message = response_message[start_index:end_index]
+                        while not self.valid_json_response(response_message):
+                            print(f'\033[32m[Invalid Response, Waiting for 20s and Retrying...]\033[0m')
+                            print(f'invalid response: {response_message}')
+                            if 'gpt' in self.model_engine:
+                                time.sleep(20)
+                            response_message = self.get_single_response(prompt)
+                        response_message = json.load(open(f'{self.output_dir}/{self.global_round}_response.json'))
+                INFO_STR_AI = self.generator.format_ai_response(response_message, self.gui_mode)
 
                 # execute code
-                with Spinner(f'\033[32m[AI Executing codes...]\033[0m'):
-                    print(f'\033[32m[Execute Code Start]\033[0m')
+                if self.gui_mode:
+                    print('[AI Executing codes...]')
+                    print(f'[Execute Code Start]')
                     execute_success, execute_info = self.execute_code(response_message)
                     self.execute_success = execute_success
                     self.execute_info = execute_info
-                    print('\033[32m[Execute Code Finish]\033[0m', self.execute_success, self.execute_info)
+                    print('[Execute Code Finish]', self.execute_success, self.execute_info)
+
                     if self.execute_success:
-                        print(f'\033[32m[Execute Code Success!]\033[0m')
+                        print(f'[Execute Code Success!]')
                     else:
-                        print(f'\033[31m[Execute Code Failed!]\033[0m')
+                        print(f'[Execute Code Failed!]')
                         self.first_prompt = False
+                else:
+                    with Spinner(f'\033[32m[AI Executing codes...]\033[0m'):
+                        print(f'\033[32m[Execute Code Start]\033[0m')
+                        execute_success, execute_info = self.execute_code(response_message)
+                        self.execute_success = execute_success
+                        self.execute_info = execute_info
+                        print('\033[32m[Execute Code Finish]\033[0m', self.execute_success, self.execute_info)
+
+                        if self.execute_success:
+                            print(f'\033[32m[Execute Code Success!]\033[0m')
+                        else:
+                            print(f'\033[31m[Execute Code Failed!]\033[0m')
+                            self.first_prompt = False
 
             self.generator.add_history(task, self.global_round, self.update_data_lists, code=response_message['code'])
             self.global_round += 1

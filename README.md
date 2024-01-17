@@ -29,6 +29,7 @@ https://github.com/JoshuaChou2018/AutoBA/assets/25849209/3334417a-de59-421c-aa5e
 
 ## What's New
 
+- **[2024/01]** Don't like the command line mode? Now we provide a new GUI and released the milestone stable version `v0.2.0` 🎉
 - **[2024/01]** Updated JSON mode for gpt-3.5-turbo-1106, gpt-4-1106-preview, the output of these two models will be more stable
 - **[2024/01]** Updated the support for ChatGPT-4 (gpt-4-32k-0613: Currently points to gpt-4-32k-0613, 32,768 tokens, Up to Sep 2021; gpt-4-1106-preview: GPT-4 Turbo, 128,000 tokens, Up to Apr 2023)
 - **[2024/01]** Updated the support for ChatGPT-3.5 (gpt-3.5-turbo: openai chatgpt-3.5, 4,096 tokens and gpt-3.5-turbo-1106: openai chatgpt-3.5, 16,385 tokens)
@@ -47,7 +48,7 @@ We're working hard to achieve more features, welcome to PRs!
 - [x] Automatic error feedback and code fixing
 - [x] Offer local LLMs (eg. code llama) as options for users
 - [x] Provide a docker version, simplify the installation process
-- [ ] A UI-based YAML generator
+- [x] A UI-based YAML generator
 - [ ] User Forum
 - [ ] Pack into a conda package, simplify the installation process
 - [ ] ...
@@ -63,6 +64,9 @@ conda install -c anaconda yaml==0.2.5 -y
 pip install openai==0.27.6 pyyaml==6.0
 pip install transformers==4.34.0
 git clone https://github.com/JoshuaChou2018/AutoBA.git
+
+# (optional) for gui version
+pip install gradio==4.14.0
 
 # (optional) for local llm (llama2)
 cd AutoBA/src/codellama-main
@@ -147,6 +151,14 @@ Execute the code while generating it with ACR module loaded.
 or with local llm as backend (**not recommended for the moment, in development and only for testing purposes**)
 
 `python app.py --config ./examples/case1.1/config.yaml --model codellama-7bi`
+
+### Start GUI version
+
+Run this command to start a GUI version of AutoBA.
+
+`python gui.py`
+
+![image-20240117115345501](https://cdn.jsdelivr.net/gh/JoshuaChou2018/oss@main/uPic/90DjWZ.image-20240117115345501.png)
 
 ### Model Zoo
 

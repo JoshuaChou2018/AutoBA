@@ -144,25 +144,52 @@ class PromptGenerator:
     def slow_print(self, input_string, speed=0.01):
         for char in str(input_string):
             # 使用print函数打印每个字符，并设置end参数为空字符串，以避免在每个字符之间输出换行符
-            print(char, end='', flush=True)
+            try:
+                print(char, end='', flush=True)
+            except:
+                print(char, end='')
             time.sleep(speed)
         print()
 
-    def format_user_prompt(self, prompt, global_round):
-        print(f'\033[31m[Round {global_round}]\033[0m')
-        print(f'\033[32m[USER]\033[0m')
-        for key in prompt:
-            self.slow_print(f"\033[34m{key}\033[0m", speed=0.001)
-            self.slow_print(prompt[key], speed=0.001)
+    def format_user_prompt(self, prompt, global_round, gui_mode):
+        INFO_STR = ''
+        if gui_mode:
+            print(f'[Round {global_round}]')
+            print(f'[USER]')
+            INFO_STR += f'[Round {global_round}] \n\n'
+            for key in prompt:
+                self.slow_print(f"{key}", speed=0.001)
+                self.slow_print(prompt[key], speed=0.001)
+                INFO_STR += f"{key} \n\n {prompt[key]} \n\n"
+        else:
+            print(f'\033[31m[Round {global_round}]\033[0m')
+            print(f'\033[32m[USER]\033[0m')
+            INFO_STR += f'\033[31m[Round {global_round}]\033[0m \n\n'
+            for key in prompt:
+                self.slow_print(f"\033[34m{key}\033[0m", speed=0.001)
+                self.slow_print(prompt[key], speed=0.001)
+                INFO_STR += f"\033[34m{key}\033[0m \n\n {prompt[key]} \n\n"
         print()
+        return INFO_STR
 
-    def format_ai_response(self, response_message):
-        print(f'\033[32m[AI]\033[0m')
-        for key in response_message:
-            self.slow_print(f"\033[34m{key}\033[0m", speed=0.01)
-            self.slow_print(response_message[key], speed=0.01)
-        print(f'\033[33m-------------------------------------\033[0m')
+    def format_ai_response(self, response_message, gui_mode):
+        INFO_STR = ''
+        if gui_mode:
+            print(f'[AI]')
+            for key in response_message:
+                self.slow_print(f"{key}", speed=0.01)
+                self.slow_print(response_message[key], speed=0.01)
+                INFO_STR += f"{key} \n\n {response_message[key]} \n\n"
+            print(f'-------------------------------------')
+        else:
+            print(f'\033[32m[AI]\033[0m')
+            for key in response_message:
+                self.slow_print(f"\033[34m{key}\033[0m", speed=0.01)
+                self.slow_print(response_message[key], speed=0.01)
+                INFO_STR += f"\033[34m{key}\033[0m \n\n {response_message[key]} \n\n"
+            print(f'\033[33m-------------------------------------\033[0m')
         print()
+        return INFO_STR
 
     def add_history(self, task, global_round, data_list, code = None):
         if global_round == 0:

@@ -13,14 +13,15 @@ import yaml
 import argparse
 import time
 
-def main(init_data_list, output_dir, init_goal_description, model_engine, openai_api, execute, blacklist):
+def main(init_data_list, output_dir, init_goal_description, model_engine, openai_api, execute, blacklist, gui_mode):
     AIAgent = Agent(initial_data_list=init_data_list,
                     output_dir=output_dir,
                     initial_goal_description=init_goal_description,
                     model_engine=model_engine,
                     openai_api=openai_api,
                     execute=execute,
-                    blacklist=blacklist)
+                    blacklist=blacklist,
+                    gui_mode=gui_mode)
     AIAgent.run()
 
 if __name__ == '__main__':
@@ -43,6 +44,9 @@ if __name__ == '__main__':
                         help='list of softwares in blacklist, default: STAR,java,perl,annovar',
                         default='STAR,java,perl,annovar',
                         type=str)
+    parser.add_argument('--gui_mode',
+                        default=False,
+                        type=bool)
     args = parser.parse_args()
 
     print("""
@@ -67,7 +71,7 @@ if __name__ == '__main__':
     output_dir = configs['output_dir']
     init_goal_description = configs['goal_description']
     start_time = time.time()
-    main(init_data_list, output_dir, init_goal_description, args.model, args.openai, args.execute, args.blacklist)
+    main(init_data_list, output_dir, init_goal_description, args.model, args.openai, args.execute, args.blacklist, args.gui_mode)
     end_time = time.time()
     print(f'\033[31m[Total time cost: {end_time-start_time}]\033[0m')
 

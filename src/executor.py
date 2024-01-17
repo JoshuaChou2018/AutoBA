@@ -8,6 +8,7 @@
 """
 
 import subprocess
+import time
 
 class CodeExecutor:
     def __init__(self):
@@ -53,7 +54,6 @@ class CodeExecutor:
             if output == '' and process.poll() is not None:
                 break
             print(f'[stdout] {output.strip()}')
-
 
         stderr = []
         for _ in process.stderr.readlines():
