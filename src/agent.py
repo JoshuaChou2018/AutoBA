@@ -12,7 +12,7 @@ import os
 import torch.cuda
 from src.prompt import PromptGenerator
 from src.spinner import Spinner
-from src.local_llm import api_preload, api_generator
+from src.local_llm import api_preload, api_generator, api_preload_deepseek, api_generator_deepseek
 from src.executor import CodeExecutor
 import openai
 import time
@@ -33,7 +33,11 @@ class Agent:
                                     'codellama-34bi',
                                     'llama2-7bc', 
                                     'llama2-13bc',
-                                    'llama2-70bc']
+                                    'llama2-70bc',
+                                    'deepseek-6.7bi',
+                                    'deepseek-7bi',
+                                    'deepseek-33bi',
+                                    'deepseek-67bc']
         self.gpt_model_engines = ['gpt-3.5-turbo',
                                   'gpt-4',
                                   'gpt-3.5-turbo-1106',
@@ -86,6 +90,19 @@ class Agent:
             self.local_llm_generator = api_preload(ckpt_dir='src/llama-main/llama-2-70b-chat/',
                                     tokenizer_path='src/llama-main/tokenizer.model',
                                     max_seq_len=4096)
+        elif self.model_engine == 'deepseek-6.7bi':
+            self.tokenizer, self.local_llm_generator = api_preload_deepseek(ckpt_dir='src/deepseek/deepseek-coder-6.7b-instruct/',
+                                                   tokenizer_path='src/deepseek/deepseek-coder-6.7b-instruct/')
+        elif self.model_engine == 'deepseek-7bi':
+            self.tokenizer, self.local_llm_generator = api_preload_deepseek(ckpt_dir='src/deepseek/deepseek-coder-7b-instruct-v1.5/',
+                                                   tokenizer_path='src/deepseek/deepseek-coder-7b-instruct-v1.5/')
+        elif self.model_engine == 'deepseek-33bi':
+            self.tokenizer, self.local_llm_generator = api_preload_deepseek(ckpt_dir='src/deepseek/deepseek-coder-33b-instruct/',
+                                                   tokenizer_path='src/deepseek/deepseek-coder-33b-instruct/')
+        elif self.model_engine == 'deepseek-67bc':
+            self.tokenizer, self.local_llm_generator = api_preload_deepseek(ckpt_dir='src/deepseek/deepseek-llm-67b-chat/',
+                                                   tokenizer_path='src/deepseek/deepseek-llm-67b-chat/')
+
 
     def get_single_response(self, prompt):
 
@@ -144,9 +161,17 @@ class Agent:
                     }
                 ],
             ]
-            results = api_generator(instructions=instructions,
-                                    generator=self.local_llm_generator,
-                                    temperature=0.6)
+            if 'deepseek' in self.model_engine:
+                results = api_generator_deepseek(instructions = instructions,
+                                       tokenizer = self.tokenizer,
+                                       generator = self.local_llm_generator,
+                                       max_new_tokens=4096,
+                                       top_k=50,
+                                       top_p=0.95)
+            elif 'llama' in self.model_engine:
+                results = api_generator(instructions=instructions,
+                                        generator=self.local_llm_generator,
+                                        temperature=0.6)
             response_message = results[0]['generation']['content']
         return response_message
 
@@ -179,6 +204,22 @@ class Agent:
     def process_tasks(self, response_message):
         self.tasks = response_message['plan']
 
+    def find_json(self, response_message):
+        if "```json\n" in response_message:
+            start_index = response_message.find("{")
+            end_index = response_message.rfind("}") + 1
+            # 提取 JSON 部分
+            return response_message[start_index:end_index]
+        elif "```bash\n" in response_message:
+            start_index = response_message.find("```bash\n")
+            end_index = response_message.find("```\n")
+            return str({'tool':'','code':response_message[start_index:end_index].lstrip('```bash\n')})
+        else:
+            start_index = response_message.find("{")
+            end_index = response_message.rfind("}") + 1
+            # 提取 JSON 部分
+            return response_message[start_index:end_index]
+
     def execute_code(self, response_message):
         if not os.path.isdir(f'{self.output_dir}'):
             os.makedirs(f'{self.output_dir}')
@@ -192,11 +233,8 @@ class Agent:
                 else:
                     executor_response_message = self.get_single_response(self.generator.get_executor_prompt(executor_info=executor_info))
                     print('[CHECKING EXECUTION RESULTS]\n')
-                    if 'llama' in self.model_engine:
-                        start_index = executor_response_message.find("{")
-                        end_index = executor_response_message.rfind("}") + 1
-                        # 提取 JSON 部分
-                        executor_response_message = executor_response_message[start_index:end_index]
+                    if 'llama' in self.model_engine or 'deepseek' in self.model_engine:
+                        executor_response_message = self.find_json(executor_response_message)
                     while not self.valid_json_response_executor(executor_response_message):
                         if 'gpt' in self.model_engine:
                             time.sleep(20)
@@ -224,11 +262,8 @@ class Agent:
         if self.gui_mode:
             print('[AI Thinking...]')
             response_message = self.get_single_response(init_prompt)
-            if 'llama' in self.model_engine:
-                start_index = response_message.find("{")
-                end_index = response_message.rfind("}") + 1
-                # 提取 JSON 部分
-                response_message = response_message[start_index:end_index]
+            if 'llama' in self.model_engine or 'deepseek' in self.model_engine:
+                response_message = self.find_json(response_message)
             while not self.valid_json_response(response_message):
                 print(f'[Invalid Response, Waiting for 20s and Retrying...]')
                 print(f'invalid response: {response_message}')
@@ -239,11 +274,8 @@ class Agent:
         else:
             with Spinner(f'\033[32m[AI Thinking...]\033[0m'):
                 response_message = self.get_single_response(init_prompt)
-                if 'llama' in self.model_engine:
-                    start_index = response_message.find("{")
-                    end_index = response_message.rfind("}") + 1
-                    # 提取 JSON 部分
-                    response_message = response_message[start_index:end_index]
+                if 'llama' in self.model_engine or 'deepseek' in self.model_engine:
+                    response_message = self.find_json(response_message)
                 while not self.valid_json_response(response_message):
                     print(f'\033[32m[Invalid Response, Waiting for 20s and Retrying...]\033[0m')
                     print(f'invalid response: {response_message}')
@@ -295,11 +327,8 @@ class Agent:
                 if self.gui_mode:
                     print('[AI Thinking...]')
                     response_message = self.get_single_response(prompt)
-                    if 'llama' in self.model_engine:
-                        start_index = response_message.find("{")
-                        end_index = response_message.rfind("}") + 1
-                        # 提取 JSON 部分
-                        response_message = response_message[start_index:end_index]
+                    if 'llama' in self.model_engine or 'deepseek' in self.model_engine:
+                        response_message = self.find_json(response_message)
                     while not self.valid_json_response(response_message):
                         print(f'[Invalid Response, Waiting for 20s and Retrying...]')
                         print(f'invalid response: {response_message}')
@@ -310,11 +339,8 @@ class Agent:
                 else:
                     with Spinner(f'\033[32m[AI Thinking...]\033[0m'):
                         response_message = self.get_single_response(prompt)
-                        if 'llama' in self.model_engine:
-                            start_index = response_message.find("{")
-                            end_index = response_message.rfind("}") + 1
-                            # 提取 JSON 部分
-                            response_message = response_message[start_index:end_index]
+                        if 'llama' in self.model_engine or 'deepseek' in self.model_engine:
+                            response_message = self.find_json(response_message)
                         while not self.valid_json_response(response_message):
                             print(f'\033[32m[Invalid Response, Waiting for 20s and Retrying...]\033[0m')
                             print(f'invalid response: {response_message}')

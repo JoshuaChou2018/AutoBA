@@ -23,14 +23,11 @@ King Abdullah University of Science and Technology, KAUST
 
 <a href='media/AutoBA_v7_manuscript.pdf'><img src='https://img.shields.io/badge/Paper-PDF-red'></a>
 
-
-
 https://github.com/JoshuaChou2018/AutoBA/assets/25849209/3334417a-de59-421c-aa5e-e2ac16ce90db
-
-
 
 ## What's New
 
+- **[2024/02]** Now we support deepseek-coder-6.7b-instruct (failed test) and deepseek-coder-7b-instruct-v1.5 (passed test), to use it, please upgrade transformers==4.35.0.
 - **[2024/01]** Don't like the command line mode? Now we provide a new GUI and released the milestone stable version `v0.2.0` 🎉
 - **[2024/01]** Updated JSON mode for gpt-3.5-turbo-1106, gpt-4-1106-preview, the output of these two models will be more stable
 - **[2024/01]** Updated the support for ChatGPT-4 (gpt-4-32k-0613: Currently points to gpt-4-32k-0613, 32,768 tokens, Up to Sep 2021; gpt-4-1106-preview: GPT-4 Turbo, 128,000 tokens, Up to Apr 2023)
@@ -51,7 +48,7 @@ We're working hard to achieve more features, welcome to PRs!
 - [x] Offer local LLMs (eg. code llama) as options for users
 - [x] Provide a docker version, simplify the installation process
 - [x] A UI-based YAML generator
-- [ ] User Forum
+- [x] Support deepseek coder
 - [ ] Pack into a conda package, simplify the installation process
 - [ ] ...
 
@@ -64,7 +61,7 @@ conda create -n abc python==3.10
 conda activate abc
 conda install -c anaconda yaml==0.2.5 -y
 pip install openai==0.27.6 pyyaml==6.0
-pip install transformers==4.34.0
+pip install transformers==4.35.0
 git clone https://github.com/JoshuaChou2018/AutoBA.git
 
 # (optional) for gui version
@@ -87,6 +84,13 @@ cd src/codellama-main
 git clone https://huggingface.co/codellama/CodeLlama-7b-Instruct-hf
 git clone https://huggingface.co/codellama/CodeLlama-13b-Instruct-hf
 git clone https://huggingface.co/codellama/CodeLlama-34b-Instruct-hf
+
+# (optional) for local llm (deepseek)
+cd AutoBA/src/deepseek
+git clone https://huggingface.co/deepseek-ai/deepseek-coder-6.7b-instruct
+git clone https://huggingface.co/deepseek-ai/deepseek-coder-7b-instruct-v1.5
+git clone https://huggingface.co/deepseek-ai/deepseek-coder-33b-instruct
+git clone https://huggingface.co/deepseek-ai/deepseek-llm-67b-chat
 
 # (optional) for features under development: the yaml generator UI
 pip install plotly==5.14.1 dash==2.9.3 pandas==2.0.1 dash-mantine-components==0.12.1
@@ -179,6 +183,10 @@ Run this command to start a GUI version of AutoBA.
 - llama2-7bc: llama-2-7b-chat
 - llama2-13bc: llama-2-13b-chat
 - llama2-70bc: llama-2-70b-chat
+- deepseek-6.7bi: deepseek-coder-6.7b-instruct
+- deepseek-7bi: deepseek-coder-7b-instruct-v1.5
+- deepseek-33bi: deepseek-coder-33b-instruct
+- deepseek-67bc: deepseek-llm-67b-chat
 
 ## Use Cases
 
