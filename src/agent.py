@@ -14,12 +14,24 @@ from src.prompt import PromptGenerator
 from src.spinner import Spinner
 from src.local_llm import api_preload, api_generator, api_preload_deepseek, api_generator_deepseek
 from src.executor import CodeExecutor
+from src.build_RAG_private import preload_retriever
 import openai
+from openai import OpenAI
 import time
 import json
 
 class Agent:
-    def __init__(self,initial_data_list, output_dir, initial_goal_description, model_engine, openai_api, execute = True, blacklist='', gui_mode=False):
+    def __init__(self,
+                 initial_data_list,
+                 output_dir,
+                 initial_goal_description,
+                 model_engine,
+                 openai_api,
+                 execute = True,
+                 blacklist='',
+                 gui_mode=False,
+                 cpu=False,
+                 rag=False):
         self.initial_data_list = initial_data_list
         self.initial_goal_description = initial_goal_description
         self.tasks = []
@@ -27,11 +39,11 @@ class Agent:
         self.output_dir = output_dir
         self.update_data_lists.append(f'{output_dir}: all outputs should be stored under this dir')
         self.model_engine = model_engine
-        self.generator = PromptGenerator(blacklist=blacklist, engine = self.model_engine)
+        self.rag = rag
         self.local_model_engines = ['codellama-7bi',
                                     'codellama-13bi',
                                     'codellama-34bi',
-                                    'llama2-7bc', 
+                                    'llama2-7bc',
                                     'llama2-13bc',
                                     'llama2-70bc',
                                     'deepseek-6.7bi',
@@ -45,13 +57,41 @@ class Agent:
                                   'gpt-4-32k-0613',
                                   'gpt-4-1106-preview']
         self.valid_model_engines = self.local_model_engines + self.gpt_model_engines
+        self.openai_api = openai_api
+
+        if self.rag:
+            if self.model_engine in self.gpt_model_engines:
+                self.retriever = preload_retriever(False,
+                                                   self.openai_api,
+                                                   PERSIST_DIR = "./softwares_RAG_openai",
+                                                   SOURCE_DIR = "./softwares"
+                                                   )
+            else:
+                self.retriever = preload_retriever(True,
+                                                   None,
+                                                   PERSIST_DIR="./softwares_RAG_local",
+                                                   SOURCE_DIR="./softwares"
+                                                   )
+        else:
+            self.retriever = None
+
+        self.generator = PromptGenerator(blacklist=blacklist,
+                                         engine = self.model_engine,
+                                         rag = self.rag,
+                                         retriever = self.retriever)
         self.global_round = 0
         self.execute = execute
         self.execute_success = True
         self.execute_info = None
         self.code_executor = CodeExecutor()
         self.gui_mode = gui_mode
-        openai.api_key = openai_api
+        self.cpu = cpu
+
+        if self.model_engine in self.gpt_model_engines:
+            self.openai_client = OpenAI(
+                # This is the default and can be omitted
+                api_key=self.openai_api,
+            )
 
         if self.model_engine not in self.valid_model_engines:
             print('[ERROR] model invalid, please check the model engine selected!')
@@ -100,8 +140,11 @@ class Agent:
             self.tokenizer, self.local_llm_generator = api_preload_deepseek(ckpt_dir='src/deepseek/deepseek-coder-33b-instruct/',
                                                    tokenizer_path='src/deepseek/deepseek-coder-33b-instruct/')
         elif self.model_engine == 'deepseek-67bc':
-            self.tokenizer, self.local_llm_generator = api_preload_deepseek(ckpt_dir='src/deepseek/deepseek-llm-67b-chat/',
-                                                   tokenizer_path='src/deepseek/deepseek-llm-67b-chat/')
+            self.tokenizer, self.local_llm_generator = api_preload_deepseek(
+                ckpt_dir='src/deepseek/deepseek-llm-67b-chat/',
+                tokenizer_path='src/deepseek/deepseek-llm-67b-chat/',
+                cpu = self.cpu
+            )
 
 
     def get_single_response(self, prompt):
@@ -110,7 +153,7 @@ class Agent:
         if self.model_engine in self.gpt_model_engines:
 
             if self.model_engine in ['gpt-3.5-turbo-1106', 'gpt-4-1106-preview']:
-                response = openai.ChatCompletion.create(
+                response = self.openai_client.chat.completions.create(
                     model=self.model_engine,
                     response_format={"type": "json_object"},
                     messages=[
@@ -119,7 +162,7 @@ class Agent:
                     temperature=0,
                 )
             else:
-                response = openai.ChatCompletion.create(
+                response = self.openai_client.chat.completions.create(
                     model=self.model_engine,
                       messages=[
                         {"role": "user", "content": str(prompt)}],
@@ -150,8 +193,7 @@ class Agent:
               }
             }
             """
-
-            response_message = response['choices'][0]['message']['content']
+            response_message = response.choices[0].message.content
         elif self.model_engine in self.local_model_engines:
             instructions = [
                 [

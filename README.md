@@ -27,7 +27,8 @@ https://github.com/JoshuaChou2018/AutoBA/assets/25849209/3334417a-de59-421c-aa5e
 
 ## What's New
 
-- **[2024/02]** Now we support deepseek-coder-6.7b-instruct (failed test) and deepseek-coder-7b-instruct-v1.5 (passed test), to use it, please upgrade transformers==4.35.0.
+- **[2024/03]** Now we support retrieval-augmented generation (RAG) to increase robustness of AutoBA, to use need, please upgrade openai==1.13.3 and install llama-index.
+- **[2024/02]** Now we support deepseek-coder-6.7b-instruct (failed test), deepseek-coder-7b-instruct-v1.5 (passed test), deepseek-coder-33b-instruct (passed test), to use it, please upgrade transformers==4.35.0.
 - **[2024/01]** Don't like the command line mode? Now we provide a new GUI and released the milestone stable version `v0.2.0` 🎉
 - **[2024/01]** Updated JSON mode for gpt-3.5-turbo-1106, gpt-4-1106-preview, the output of these two models will be more stable
 - **[2024/01]** Updated the support for ChatGPT-4 (gpt-4-32k-0613: Currently points to gpt-4-32k-0613, 32,768 tokens, Up to Sep 2021; gpt-4-1106-preview: GPT-4 Turbo, 128,000 tokens, Up to Apr 2023)
@@ -49,6 +50,7 @@ We're working hard to achieve more features, welcome to PRs!
 - [x] Provide a docker version, simplify the installation process
 - [x] A UI-based YAML generator
 - [x] Support deepseek coder
+- [x] Support RAG
 - [ ] Pack into a conda package, simplify the installation process
 - [ ] ...
 
@@ -60,9 +62,12 @@ We're working hard to achieve more features, welcome to PRs!
 conda create -n abc python==3.10
 conda activate abc
 conda install -c anaconda yaml==0.2.5 -y
-pip install openai==0.27.6 pyyaml==6.0
+pip install openai==1.13.3 pyyaml==6.0
 pip install transformers==4.35.0
 git clone https://github.com/JoshuaChou2018/AutoBA.git
+## for RAG
+pip install llama-index==0.10.14
+pip install llama-index-embeddings-huggingface
 
 # (optional) for gui version
 pip install gradio==4.14.0

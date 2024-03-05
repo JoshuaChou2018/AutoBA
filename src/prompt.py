@@ -8,15 +8,18 @@
 @Date    ：2023/5/2 11:07 
 '''
 from copy import deepcopy
+from src.build_RAG_private import retrive
 import time
 
 class PromptGenerator:
-    def __init__(self, blacklist='', engine = None):
+    def __init__(self, blacklist='', engine = None, rag = False, retriever = None):
         self.history_summary = ''
         self.current_goal = None
         self.global_goal = None
         self.tasks = None
         self.engine = engine
+        self.rag = rag
+        self.retriever = retriever
         self.blacklist = blacklist.split(',')
         self.special_softwares = ['hisat2, HISAT2, bowtie2: you should build genome index as the first step, use -U if input files are single-end reads, use -1 and -2 if input files are paired-end reads, you should use --readFilesCommand zcat if your input files end with .gz, you should process each .gz separately. ',
                                   'trimmomatic: you should substitute with cutadapter. ',
@@ -67,7 +70,7 @@ class PromptGenerator:
                         "You should use information in input to write a detailed plan to finish your goal.",
                         f"You should include the software name and should not use those software: {self.blacklist}.",
                         "You should only respond in JSON format with my fixed format.",
-                        "Your JSON response should only be enclosed in double quotes.",
+                        "Your JSON response should only be enclosed in double quotes and you can have only one JSON in your response.",
                         "You should not write loading data as a separate step.",
                         "You should not write anything else except for your JSON response.",
                         "You should make your answer as detailed as possible."
@@ -79,12 +82,17 @@ class PromptGenerator:
                     "goal": self.current_goal,
                     "fixed format for JSON response": {
                         "plan": [
-                            "Your detailed step-by-step sub-tasks in a list to finish your goal, for example: ['step 1: content', 'step 2: content', 'step 3: content']."
+                            "Your detailed step-by-step sub-tasks in a list to finish your goal, for example: ['step 1: use tool 1 for goal 1', 'step 2: use tool 2 for goal 2', 'step 3: use tool 3 for goal 3']."
                         ]
                     }
                 }
             final_prompt = prompt
         else:
+            if self.rag:
+                retriever_info = retrive(self.retriever,
+                                         retriever_prompt=f'To {self.current_goal}, what parameters should I use?')
+            else:
+                retriever_info = ''
             prompt = {
                 "role": "Act as a bioinformatician, the rules must be strictly followed!",
                 "rules": [
@@ -123,8 +131,10 @@ class PromptGenerator:
                     'You should not repeat what you have done in history.',
                     'You should only use software directly you installed with conda or pip.',
                     'If you use Rscript -e, you should make sure all variables exist in your command, otherwise, you need to check your history to repeat previous steps and generate those variables.',
-                    "You should not write anything else except for your JSON response."
+                    "You should not write anything else except for your JSON response.",
+                    "If RAG information is provided, you should refer to those information and use correct parameters for your code."
                 ],
+                "RAG information": retriever_info,
                 "fixed format for JSON response": {
                     "tool": "name of the tool you use",
                     "code": "bash code to finish the current task"

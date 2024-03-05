@@ -162,11 +162,17 @@ def test2():
 
 def api_preload_deepseek(
     ckpt_dir: str,
-    tokenizer_path: str = None,):
+    tokenizer_path: str = None,
+    cpu = False
+):
     print(">> start loading model")
     tokenizer = AutoTokenizer.from_pretrained(tokenizer_path, trust_remote_code=True)
-    generator = AutoModelForCausalLM.from_pretrained(ckpt_dir, trust_remote_code=True,
-                                                 torch_dtype=torch.bfloat16).cuda()
+    if cpu:
+        generator = AutoModelForCausalLM.from_pretrained(ckpt_dir, trust_remote_code=True,
+                                                         torch_dtype=torch.bfloat16)
+    else:
+        generator = AutoModelForCausalLM.from_pretrained(ckpt_dir, trust_remote_code=True,
+                                                     torch_dtype=torch.bfloat16).cuda()
     print(">> model loaded")
     return tokenizer, generator
 
