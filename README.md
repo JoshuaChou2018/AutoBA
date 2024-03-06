@@ -27,7 +27,7 @@ https://github.com/JoshuaChou2018/AutoBA/assets/25849209/3334417a-de59-421c-aa5e
 
 ## What's New
 
-- **[2024/03]** Now we support retrieval-augmented generation (RAG) to increase robustness of AutoBA, to use need, please upgrade openai==1.13.3 and install llama-index.
+- **[2024/03]** Now we support retrieval-augmented generation (RAG) to increase robustness of AutoBA, to use it, please upgrade openai==1.13.3 and install llama-index.
 - **[2024/02]** Now we support deepseek-coder-6.7b-instruct (failed test), deepseek-coder-7b-instruct-v1.5 (passed test), deepseek-coder-33b-instruct (passed test), to use it, please upgrade transformers==4.35.0.
 - **[2024/01]** Don't like the command line mode? Now we provide a new GUI and released the milestone stable version `v0.2.0` 🎉
 - **[2024/01]** Updated JSON mode for gpt-3.5-turbo-1106, gpt-4-1106-preview, the output of these two models will be more stable
