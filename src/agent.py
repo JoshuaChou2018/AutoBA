@@ -245,7 +245,7 @@ class Agent:
             with open(f'{self.output_dir}/executor_response.json', 'w') as w:
                 json.dump(eval(response_message), w)
             tmp_data = json.load(open(f'{self.output_dir}/executor_response.json'))
-            if tmp_data['stat'] not in ['0', '1']:
+            if str(tmp_data['stat']) not in ['0', '1']:
                 return False
         except:
             print('[INVALID RESSPONSE]\n', response_message)
@@ -289,6 +289,7 @@ class Agent:
                     max_tries = 10
                     n_tries = 0
                     while not self.valid_json_response_executor(executor_response_message):
+                        print(f'[EXECUTOR RESPONSE CHECKING TEST #{n_tries}/{max_tries}]')
                         if 'gpt' in self.model_engine:
                             time.sleep(20)
                         executor_response_message = self.get_single_response(
@@ -302,6 +303,7 @@ class Agent:
                         n_tries += 1
                     executor_response_message = json.load(open(f'{self.output_dir}/executor_response.json'))
                     execute_statu, execute_info = executor_response_message['stat'], executor_response_message['info']
+                    #execute_statu, execute_info = executor_response_message['stat'], executor_info
                 #os.system(f'bash {self.output_dir}/{self.global_round}.sh')
                 return bool(int(execute_statu)), execute_info
             return True, 'Success without executing'

@@ -58,10 +58,10 @@ class CodeExecutor:
                 print(f"[stderr] {_}", end='')
                 stderr.append(_)
 
-        if len(stderr) > 30:
-            stderr = stderr[-30:]
+        if len(stderr) > 10:
+            stderr = stderr[-10:]
 
-        stderr = ''.join(stderr)
+        stderr = '\n'.join(stderr)
         process.communicate()
 
         executor_info = stderr

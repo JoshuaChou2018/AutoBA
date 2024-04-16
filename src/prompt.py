@@ -37,7 +37,7 @@ class PromptGenerator:
             ],
             "fixed format": {
                 "stat": "0 or 1, 0 indicates failure and 1 indicates success",
-                "info": "summary of errors"
+                "info": "summary of errors."
             }
         }
         final_prompt = prompt
