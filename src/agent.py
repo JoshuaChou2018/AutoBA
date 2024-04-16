@@ -131,14 +131,23 @@ class Agent:
                                     tokenizer_path='src/llama-main/tokenizer.model',
                                     max_seq_len=4096)
         elif self.model_engine == 'deepseek-6.7bi':
-            self.tokenizer, self.local_llm_generator = api_preload_deepseek(ckpt_dir='src/deepseek/deepseek-coder-6.7b-instruct/',
-                                                   tokenizer_path='src/deepseek/deepseek-coder-6.7b-instruct/')
+            self.tokenizer, self.local_llm_generator = api_preload_deepseek(
+                ckpt_dir='src/deepseek/deepseek-coder-6.7b-instruct/',
+                tokenizer_path='src/deepseek/deepseek-coder-6.7b-instruct/',
+                cpu = self.cpu
+            )
         elif self.model_engine == 'deepseek-7bi':
-            self.tokenizer, self.local_llm_generator = api_preload_deepseek(ckpt_dir='src/deepseek/deepseek-coder-7b-instruct-v1.5/',
-                                                   tokenizer_path='src/deepseek/deepseek-coder-7b-instruct-v1.5/')
+            self.tokenizer, self.local_llm_generator = api_preload_deepseek(
+                ckpt_dir='src/deepseek/deepseek-coder-7b-instruct-v1.5/',
+                tokenizer_path='src/deepseek/deepseek-coder-7b-instruct-v1.5/',
+                cpu = self.cpu
+            )
         elif self.model_engine == 'deepseek-33bi':
-            self.tokenizer, self.local_llm_generator = api_preload_deepseek(ckpt_dir='src/deepseek/deepseek-coder-33b-instruct/',
-                                                   tokenizer_path='src/deepseek/deepseek-coder-33b-instruct/')
+            self.tokenizer, self.local_llm_generator = api_preload_deepseek(
+                ckpt_dir='src/deepseek/deepseek-coder-33b-instruct/',
+                tokenizer_path='src/deepseek/deepseek-coder-33b-instruct/',
+                cpu = self.cpu
+            )
         elif self.model_engine == 'deepseek-67bc':
             self.tokenizer, self.local_llm_generator = api_preload_deepseek(
                 ckpt_dir='src/deepseek/deepseek-llm-67b-chat/',
@@ -277,11 +286,20 @@ class Agent:
                     print('[CHECKING EXECUTION RESULTS]\n')
                     if 'llama' in self.model_engine or 'deepseek' in self.model_engine:
                         executor_response_message = self.find_json(executor_response_message)
+                    max_tries = 10
+                    n_tries = 0
                     while not self.valid_json_response_executor(executor_response_message):
                         if 'gpt' in self.model_engine:
                             time.sleep(20)
                         executor_response_message = self.get_single_response(
                             self.generator.get_executor_prompt(executor_info=executor_info))
+                        print('[CHECKING EXECUTION RESULTS]\n')
+                        if 'llama' in self.model_engine or 'deepseek' in self.model_engine:
+                            executor_response_message = self.find_json(executor_response_message)
+                        if n_tries > max_tries:
+                            executor_response_message = {'stat':0, 'info':'None'}
+                            break
+                        n_tries += 1
                     executor_response_message = json.load(open(f'{self.output_dir}/executor_response.json'))
                     execute_statu, execute_info = executor_response_message['stat'], executor_response_message['info']
                 #os.system(f'bash {self.output_dir}/{self.global_round}.sh')

@@ -59,12 +59,23 @@ We're working hard to achieve more features, welcome to PRs!
 ### Command line
 ```shell
 # (mandatory) for basic functions
-conda create -n abc python==3.10
-conda activate abc
-conda install -c anaconda yaml==0.2.5 -y
+curl -L -O "https://github.com/conda-forge/miniforge/releases/latest/download/Mambaforge-$(uname)-$(uname -m).sh"
+bash Mambaforge-$(uname)-$(uname -m).sh
+git clone https://github.com/JoshuaChou2018/AutoBA.git
+
+mamba create -n abc_runtime python==3.10 -y
+mamba activate abc_runtime
+# Then manually:
+add conda-forge and bioconda to ~/mambaforge/.condarc
+            
+mamba create -n abc python==3.10
+mamba activate abc
+mamba install -c anaconda yaml==0.2.5 -y
 pip install openai==1.13.3 pyyaml==6.0
 pip install transformers==4.35.0
-git clone https://github.com/JoshuaChou2018/AutoBA.git
+pip install accelerate==0.29.2
+pip install bitsandbytes==0.43.1
+
 ## for RAG
 pip install llama-index==0.10.14
 pip install llama-index-embeddings-huggingface

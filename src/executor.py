@@ -14,12 +14,7 @@ class CodeExecutor:
     def __init__(self):
         self.bash_code_path = None
         self.code_prefix = [
-            'conda create -n abc_runtime python==3.10 -y',
-            'source activate abc_runtime',
-            'which python',
-            'conda config --set show_channel_urls false',
-            'conda config --add channels conda-forge',
-            'conda config --add channels bioconda',
+            'mamba activate abc_runtime',
         ]
         self.code_postfix = [
         ]

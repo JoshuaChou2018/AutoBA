@@ -166,13 +166,26 @@ def api_preload_deepseek(
     cpu = False
 ):
     print(">> start loading model")
-    tokenizer = AutoTokenizer.from_pretrained(tokenizer_path, trust_remote_code=True)
+    tokenizer = AutoTokenizer.from_pretrained(
+        tokenizer_path,
+        trust_remote_code=True)
     if cpu:
-        generator = AutoModelForCausalLM.from_pretrained(ckpt_dir, trust_remote_code=True,
-                                                         torch_dtype=torch.bfloat16)
+        generator = AutoModelForCausalLM.from_pretrained(
+            ckpt_dir,
+            trust_remote_code=True,
+            torch_dtype=torch.bfloat16)
     else:
-        generator = AutoModelForCausalLM.from_pretrained(ckpt_dir, trust_remote_code=True,
-                                                     torch_dtype=torch.bfloat16).cuda()
+        if '67b' in ckpt_dir:
+            generator = AutoModelForCausalLM.from_pretrained(
+                ckpt_dir,
+                trust_remote_code=True,
+                torch_dtype=torch.bfloat16,
+                load_in_8bit=True)
+        else:
+            generator = AutoModelForCausalLM.from_pretrained(
+                ckpt_dir,
+                trust_remote_code=True,
+                torch_dtype=torch.bfloat16).cuda()
     print(">> model loaded")
     return tokenizer, generator
 
