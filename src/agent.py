@@ -82,7 +82,7 @@ class Agent:
         self.global_round = 0
         self.execute = execute
         self.execute_success = True
-        self.execute_info = None
+        self.execute_info = ''
         self.code_executor = CodeExecutor()
         self.gui_mode = gui_mode
         self.cpu = cpu
@@ -231,7 +231,7 @@ class Agent:
             os.makedirs(f'{self.output_dir}')
         try:
             with open(f'{self.output_dir}/{self.global_round}_response.json', 'w') as w:
-                json.dump(eval(response_message), w)
+                json.dump(json.loads(response_message), w)
             json.load(open(f'{self.output_dir}/{self.global_round}_response.json'))
         except:
             print('[INVALID RESSPONSE]\n', response_message)
@@ -243,7 +243,7 @@ class Agent:
             os.makedirs(f'{self.output_dir}')
         try:
             with open(f'{self.output_dir}/executor_response.json', 'w') as w:
-                json.dump(eval(response_message), w)
+                json.dump(json.loads(response_message), w)
             tmp_data = json.load(open(f'{self.output_dir}/executor_response.json'))
             if str(tmp_data['stat']) not in ['0', '1']:
                 return False
@@ -278,6 +278,7 @@ class Agent:
             with open(f'{self.output_dir}/{self.global_round}.sh', 'w') as w:
                 w.write(response_message['code'])
             if self.execute:
+                self.last_execute_code = response_message['code']
                 executor_info = self.code_executor.execute(bash_code_path=f'{self.output_dir}/{self.global_round}.sh')
                 if len(executor_info) == 0:
                     execute_statu, execute_info = True, 'No error message'
@@ -382,7 +383,8 @@ class Agent:
                         goal_description=task,
                         global_round=self.global_round,
                         execute_success=self.execute_success,
-                        execute_info=self.execute_info
+                        execute_info=self.execute_info,
+                        last_execute_code=self.last_execute_code
                     )
 
                 INFO_STR_USER = self.generator.format_user_prompt(prompt, self.global_round, self.gui_mode)
@@ -423,6 +425,7 @@ class Agent:
 
                     if self.execute_success:
                         print(f'[Execute Code Success!]')
+                        self.execute_info = ''
                     else:
                         print(f'[Execute Code Failed!]')
                         self.first_prompt = False
@@ -436,6 +439,7 @@ class Agent:
 
                         if self.execute_success:
                             print(f'\033[32m[Execute Code Success!]\033[0m')
+                            self.execute_info = ''
                         else:
                             print(f'\033[31m[Execute Code Failed!]\033[0m')
                             self.first_prompt = False

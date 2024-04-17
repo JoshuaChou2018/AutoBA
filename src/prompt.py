@@ -21,6 +21,9 @@ class PromptGenerator:
         self.rag = rag
         self.retriever = retriever
         self.blacklist = blacklist.split(',')
+        self.speciallist = ['sra-toolkit: mamba install sra-tools',
+                            'trim_galore: mamba install trim-galore',
+                            'bwa: build index first']
 
     def get_executor_prompt(self, executor_info):
         prompt = {
@@ -37,13 +40,13 @@ class PromptGenerator:
             ],
             "fixed format": {
                 "stat": "0 or 1, 0 indicates failure and 1 indicates success",
-                "info": "summary of errors."
+                "info": "summarize errors in one sentence."
             }
         }
         final_prompt = prompt
         return final_prompt
 
-    def get_prompt(self, data_list, goal_description, global_round, execute_success=True, execute_info=None):
+    def get_prompt(self, data_list, goal_description, global_round, execute_success=True, execute_info=None, last_execute_code=None):
         """
 
         :param data_list: ['data path: data description']
@@ -97,7 +100,8 @@ class PromptGenerator:
                     "You should only respond in JSON format with my fixed format.",
                     "Your JSON response should only be enclosed in double quotes.",
                     "You should make your answer as simple as possible.",
-                    "You should not write anything else except for your JSON response."
+                    "You should not write anything else except for your JSON response.",
+                    'You should use full absolute path for all files.',
                 ],
                 "system": [
                     "You have a Ubuntu 18.04 system",
@@ -111,12 +115,11 @@ class PromptGenerator:
                 "history": self.history_summary,
                 "current task": self.current_goal,
                 "code requirement": [
-                    f"You should not use that software: {self.blacklist}.",
+                    f"You should not use those software: {self.blacklist}.",
                     "You should not create and activate the mamba environment abc_runtime.",
                     'You should install dependencies and software you need to use with mamba or pip with -y.',
                     'You should pay attention to the number of input files and do not miss any.',
                     'You should process each file independently and can not use FOR loop.',
-                    'You should use the path for all files according to input and history.',
                     'You should use the default values for all parameters that are not specified.',
                     'You should not repeat what you have done in history.',
                     'You should only use software directly you installed with mamba or pip.',
@@ -127,14 +130,14 @@ class PromptGenerator:
                 "RAG information": retriever_info,
                 "fixed format for JSON response": {
                     "tool": "name of the tool you use",
-                    "code": "bash code to finish the current task"
+                    "code": "bash code to finish the current task in one line."
                 }
             }
             if execute_success:
                 final_prompt = prompt
             else:
                 final_prompt = prompt
-                final_prompt['You must solve this code error'] = f'{execute_info}'
+                final_prompt['history'] += f' You previously generated codes: {last_execute_code}. However, your code has errors: {execute_info}. You should use those software in correct way: {self.speciallist}'
 
         return final_prompt
 

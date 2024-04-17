@@ -44,11 +44,13 @@ class CodeExecutor:
                                             text=True)
 
         # 实时读取输出并打印
+        stdout = []
         while True:
             output = process.stdout.readline()
             if output == '' and process.poll() is not None:
                 break
             print(f'[stdout] {output.strip()}')
+            stdout.append(f'[stdout] {output.strip()}')
 
         stderr = []
         for _ in process.stderr.readlines():
@@ -58,11 +60,15 @@ class CodeExecutor:
                 print(f"[stderr] {_}", end='')
                 stderr.append(_)
 
+        if len(stdout) > 10:
+            stdout = stdout[-10:]
         if len(stderr) > 10:
             stderr = stderr[-10:]
 
+        stdout = '\n'.join(stdout)
         stderr = '\n'.join(stderr)
+
         process.communicate()
 
-        executor_info = stderr
+        executor_info = stdout + '\n' + stderr
         return executor_info

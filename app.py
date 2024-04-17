@@ -52,8 +52,8 @@ if __name__ == '__main__':
                         default=False,
                         type=bool)
     parser.add_argument('--blacklist',
-                        help='list of softwares in blacklist, default: STAR,java,perl,annovar,cutadapt',
-                        default='STAR,java,perl,annovar',
+                        help='list of softwares in blacklist, default: java,perl,annovar',
+                        default='java,perl,annovar,Cutadapt,STAR',
                         type=str)
     parser.add_argument('--gui_mode',
                         default=False,
