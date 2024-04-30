@@ -19,7 +19,7 @@ from llama_index.core import (
 from llama_index.embeddings.openai import OpenAIEmbedding
 from llama_index.embeddings.huggingface import HuggingFaceEmbedding
 
-def preload_retriever(local_engine = True, openai = None, PERSIST_DIR = "../softwares_RAG", SOURCE_DIR = "../softwares"):
+def preload_retriever(local_engine = True, openai = None, PERSIST_DIR = "../softwares_database_RAG", SOURCE_DIR = "../softwares_database"):
     if not local_engine:
         os.environ['OPENAI_API_KEY'] = openai
         Settings.embed_model = OpenAIEmbedding()

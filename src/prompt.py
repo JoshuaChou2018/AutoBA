@@ -22,8 +22,7 @@ class PromptGenerator:
         self.retriever = retriever
         self.blacklist = blacklist.split(',')
         self.speciallist = ['sra-toolkit: mamba install sra-tools',
-                            'trim_galore: mamba install trim-galore',
-                            'bwa: build index first']
+                            'trim_galore: mamba install trim-galore']
 
     def get_executor_prompt(self, executor_info):
         prompt = {
@@ -125,9 +124,9 @@ class PromptGenerator:
                     'You should only use software directly you installed with mamba or pip.',
                     'If you use Rscript -e, you should make sure all variables exist in your command, otherwise, you need to check your history to repeat previous steps and generate those variables.',
                     "You should not write anything else except for your JSON response.",
-                    "If RAG information is provided, you should refer to those information and use correct parameters."
+                    "If RAG is provided, you should use it as template to write codes. You should not copy the RAG directly."
                 ],
-                "RAG information": retriever_info,
+                "RAG: replace <...> with correct values and file paths": retriever_info,
                 "fixed format for JSON response": {
                     "tool": "name of the tool you use",
                     "code": "bash code to finish the current task in one line."
@@ -137,7 +136,8 @@ class PromptGenerator:
                 final_prompt = prompt
             else:
                 final_prompt = prompt
-                final_prompt['history'] += f' You previously generated codes: {last_execute_code}. However, your code has errors: {execute_info}. You should use those software in correct way: {self.speciallist}'
+                final_prompt['history'] += f' You previously generated codes: {last_execute_code}. However, your code has errors and you should fix them: {execute_info}.'
+                #final_prompt['code requirement'].append(f' You previously generated codes: {last_execute_code}. However, your code has errors and you should fix them: {execute_info}. You should use those software in correct way: {self.speciallist}')
 
         return final_prompt
 

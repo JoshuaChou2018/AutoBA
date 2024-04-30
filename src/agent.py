@@ -63,14 +63,14 @@ class Agent:
             if self.model_engine in self.gpt_model_engines:
                 self.retriever = preload_retriever(False,
                                                    self.openai_api,
-                                                   PERSIST_DIR = "./softwares_RAG_openai",
-                                                   SOURCE_DIR = "./softwares"
+                                                   PERSIST_DIR = "./softwares_database_RAG_openai",
+                                                   SOURCE_DIR = "./softwares_database"
                                                    )
             else:
                 self.retriever = preload_retriever(True,
                                                    None,
-                                                   PERSIST_DIR="./softwares_RAG_local",
-                                                   SOURCE_DIR="./softwares"
+                                                   PERSIST_DIR="./softwares_database_RAG_local",
+                                                   SOURCE_DIR="./softwares_database"
                                                    )
         else:
             self.retriever = None

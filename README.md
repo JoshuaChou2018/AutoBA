@@ -75,6 +75,7 @@ pip install openai==1.13.3 pyyaml==6.0
 pip install transformers==4.35.0
 pip install accelerate==0.29.2
 pip install bitsandbytes==0.43.1
+pip install vllm==0.4.1
 
 ## for RAG
 pip install llama-index==0.10.14
