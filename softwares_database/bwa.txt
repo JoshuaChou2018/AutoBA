@@ -1,0 +1,17 @@
+1. install
+mamba install bwa
+
+2. build index
+bwa index <path to reference genome file>
+
+3. alignment with single-end reads
+bwa mem <path to reference genome file> <path to reads file> > <path to output sam file>
+
+4. alignment with paired-end reads
+bwa mem <path to reference genome file> <path to read 1 file> <path to read 2 file> > <path to output sam file>
+
+5. alignment with PacBio subreads
+bwa mem -x pacbio <path to reference genome file> <path to reads file> > <path to output sam file>
+
+6. alignment with Oxford Nanopore reads
+bwa mem -x ont2d <path to reference genome file> <path to reads file> > <path to output sam file>

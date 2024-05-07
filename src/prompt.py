@@ -84,7 +84,7 @@ class PromptGenerator:
         else:
             if self.rag:
                 retriever_info = retrive(self.retriever,
-                                         retriever_prompt=f'To {self.current_goal}, what parameters should I use?')
+                                         retriever_prompt=f'{self.current_goal}')
             else:
                 retriever_info = ''
             prompt = {
@@ -126,7 +126,7 @@ class PromptGenerator:
                     "You should not write anything else except for your JSON response.",
                     "If RAG is provided, you should use it as template to write codes. You should not copy the RAG directly."
                 ],
-                "RAG: replace <...> with correct values and file paths": retriever_info,
+                "RAG: If provided, you should replace <...> with correct values and file paths based on information in history": retriever_info,
                 "fixed format for JSON response": {
                     "tool": "name of the tool you use",
                     "code": "bash code to finish the current task in one line."
