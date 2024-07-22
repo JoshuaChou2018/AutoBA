@@ -1,0 +1,12 @@
+1. Install the bowtie2
+mamba install -c bioconda bowtie2 -y
+
+2. Build an index using bowtie2
+bowtie2-build --threads <number of alignment threads to launch> <path to genome fasta file> <path to Index filename prefix (minus trailing .X.bt2)>>
+
+3. map reads to reference genome with bowtie2
+#PE
+bowtie2 -p <number of alignment threads to launch> -x <path to Index filename prefix (minus trailing .X.bt2)> -1 <path to read 1 file> -2 <path to read 2 file> -S <path to output sam file>
+
+#SE
+bowtie2 -p <number of alignment threads to launch> -x <path to Index filename prefix (minus trailing .X.bt2)> -U <path to read 1 file> -S <path to output sam file>

@@ -1,0 +1,8 @@
+1. install STAR
+mamba install bioconda::star -y
+
+2. Build a genome index
+STAR --runMode genomeGenerate --runThreadN <int: number of threads to run STAR> --genomeDir <string: path to the directory where genome files are stored> --genomeFastaFiles <string(s): path(s) to the fasta files with the genome sequences>
+
+3. Align RNA-Seq Reads to the genome with STAR
+STAR --runThreadN <int: number of threads to run STAR> --runMode alignReads --readFilesCommand zcat --genomeDir <string: path to the directory where genome files are stored> --readFilesIn <string(s): paths to files that contain input read1 (and, if needed,  read2)> --outFileNamePrefix <string: output files name prefix (including full or relative path)>

@@ -1,0 +1,9 @@
+1. install macs2
+mamba install -c bioconda macs2 -y
+
+2. install macs3
+pip install macs3
+pip install --upgrade macs3
+
+3. use macs to call peaks
+macs3 callpeak -t <path to all ChIP-seq treatment file. If multiple files are given as '-t A B C', then they will all be read and pooled together.> -c <path to all control files. If multiple files are given as '-c A B C', they  will  be  pooled  to estimate ChIP-seq background noise.> -f AUTO -n <Experiment name> --outdir <outdir> -g <Effective  genome size. It can be 1.0e+9 or 1000000000, or shortcuts:'hs' for human (2.7e9), 'mm' for mouse (1.87e9), 'ce' for C. elegans (9e7) and 'dm'  for  fruitfly (1.2e8), Default:hs> -B

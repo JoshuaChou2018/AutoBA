@@ -1,0 +1,9 @@
+1. fastp installation
+mamba install -c bioconda fastp -y
+
+2. Use fastp for rawdata quality control, filtering and statistics
+#1 PE
+fastp -i <path to read1 input file> -o <path to read1 output file> -I <path to read2 input file> -O <path to read2 output file>
+
+#2 SE
+fastp -i <path to input file> -o <path to output file>

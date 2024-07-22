@@ -13,7 +13,16 @@ import yaml
 import argparse
 import time
 
-def main(init_data_list, output_dir, init_goal_description, model_engine, openai_api, execute, blacklist, gui_mode):
+def main(init_data_list,
+         output_dir,
+         init_goal_description,
+         model_engine,
+         openai_api,
+         execute,
+         blacklist,
+         gui_mode,
+         cpu,
+         rag):
     AIAgent = Agent(initial_data_list=init_data_list,
                     output_dir=output_dir,
                     initial_goal_description=init_goal_description,
@@ -21,7 +30,9 @@ def main(init_data_list, output_dir, init_goal_description, model_engine, openai
                     openai_api=openai_api,
                     execute=execute,
                     blacklist=blacklist,
-                    gui_mode=gui_mode)
+                    gui_mode=gui_mode,
+                    cpu=cpu,
+                    rag=rag)
     AIAgent.run()
 
 if __name__ == '__main__':
@@ -41,10 +52,17 @@ if __name__ == '__main__':
                         default=False,
                         type=bool)
     parser.add_argument('--blacklist',
-                        help='list of softwares in blacklist, default: STAR,java,perl,annovar',
-                        default='STAR,java,perl,annovar',
+                        help='list of softwares in blacklist, default: java,perl,annovar',
+                        default='java,perl,annovar,Cutadapt,STAR',
                         type=str)
     parser.add_argument('--gui_mode',
+                        default=False,
+                        type=bool)
+    parser.add_argument('--cpu',
+                        default=False,
+                        type=bool)
+    parser.add_argument('--rag',
+                        help='Use RAG or not',
                         default=False,
                         type=bool)
     args = parser.parse_args()
@@ -71,7 +89,16 @@ if __name__ == '__main__':
     output_dir = configs['output_dir']
     init_goal_description = configs['goal_description']
     start_time = time.time()
-    main(init_data_list, output_dir, init_goal_description, args.model, args.openai, args.execute, args.blacklist, args.gui_mode)
+    main(init_data_list,
+         output_dir,
+         init_goal_description,
+         args.model,
+         args.openai,
+         args.execute,
+         args.blacklist,
+         args.gui_mode,
+         args.cpu,
+         args.rag)
     end_time = time.time()
     print(f'\033[31m[Total time cost: {end_time-start_time}]\033[0m')
 

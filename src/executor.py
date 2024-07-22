@@ -14,12 +14,7 @@ class CodeExecutor:
     def __init__(self):
         self.bash_code_path = None
         self.code_prefix = [
-            'conda create -n abc_runtime python==3.10 -y',
-            'source activate abc_runtime',
-            'which python',
-            'conda config --set show_channel_urls false',
-            'conda config --add channels conda-forge',
-            'conda config --add channels bioconda',
+            'mamba activate abc_runtime',
         ]
         self.code_postfix = [
         ]
@@ -49,11 +44,13 @@ class CodeExecutor:
                                             text=True)
 
         # 实时读取输出并打印
+        stdout = []
         while True:
             output = process.stdout.readline()
             if output == '' and process.poll() is not None:
                 break
             print(f'[stdout] {output.strip()}')
+            stdout.append(f'[stdout] {output.strip()}')
 
         stderr = []
         for _ in process.stderr.readlines():
@@ -63,11 +60,15 @@ class CodeExecutor:
                 print(f"[stderr] {_}", end='')
                 stderr.append(_)
 
-        if len(stderr) > 30:
-            stderr = stderr[-30:]
+        if len(stdout) > 10:
+            stdout = stdout[-10:]
+        if len(stderr) > 10:
+            stderr = stderr[-10:]
 
-        stderr = ''.join(stderr)
+        stdout = '\n'.join(stdout)
+        stderr = '\n'.join(stderr)
+
         process.communicate()
 
-        executor_info = stderr
+        executor_info = stdout + '\n' + stderr
         return executor_info
