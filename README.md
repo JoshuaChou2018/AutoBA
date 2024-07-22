@@ -52,6 +52,8 @@ We're working hard to achieve more features, welcome to PRs!
 - [x] Support deepseek coder
 - [x] Support RAG
 - [ ] Pack into a conda package, simplify the installation process
+- [ ] change current LLMs into ollama
+- [ ] support interactive mode
 - [ ] ...
 
 ## Installation
