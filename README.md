@@ -10,7 +10,7 @@
 |__/  |__/ \______/    \___/   \______/ |_______/ |__/  |__/
                                                             
            Automated Bioinformatics Analysis
-                  www.joshuachou.ink
+               www.joshuachou.ink/about
 ```
 
 **An AI Agent for Fully Automated Multi-omic Analyses**.
@@ -27,6 +27,7 @@ https://github.com/JoshuaChou2018/AutoBA/assets/25849209/3334417a-de59-421c-aa5e
 
 ## What's New
 
+- **[2024/08]** We integrated ollama to make it easier to use local LLMs and released the latest stable version (v0.4.0)
 - **[2024/03]** Now we support retrieval-augmented generation (RAG) to increase robustness of AutoBA, to use it, please upgrade openai==1.13.3 and install llama-index.
 - **[2024/02]** Now we support deepseek-coder-6.7b-instruct (failed test), deepseek-coder-7b-instruct-v1.5 (passed test), deepseek-coder-33b-instruct (passed test), to use it, please upgrade transformers==4.35.0.
 - **[2024/01]** Don't like the command line mode? Now we provide a new GUI and released the milestone stable version `v0.2.0` 🎉
@@ -51,9 +52,10 @@ We're working hard to achieve more features, welcome to PRs!
 - [x] A UI-based YAML generator
 - [x] Support deepseek coder
 - [x] Support RAG
+- [x] Support ollama
 - [ ] Pack into a conda package, simplify the installation process
-- [ ] change current LLMs into ollama
-- [ ] support interactive mode
+- [ ] Interactive mode
+- [ ] GUI for data visualization
 - [ ] ...
 
 ## Installation
@@ -79,9 +81,15 @@ pip install accelerate==0.29.2
 pip install bitsandbytes==0.43.1
 pip install vllm==0.4.1
 
-## for RAG
+## (optional) for RAG
 pip install llama-index==0.10.14
 pip install llama-index-embeddings-huggingface
+
+# (optional) for local llm with ollama
+mamba install langchain-community==0.2.6 -y
+curl -fsSL https://ollama.com/install.sh | OLLAMA_VERSION=0.3.4 sh
+## pull the model before using it with AutoBA
+ollama run llama3.1
 
 # (optional) for gui version
 pip install gradio==4.14.0
@@ -177,6 +185,10 @@ or with local llm as backend (**not recommended for the moment, in development a
 
 `python app.py --config ./examples/case1.1/config.yaml --model codellama-7bi`
 
+or with local llm based on ollama as backend
+
+`python app.py --config ./examples/case1.1/config.yaml --model ollama_llama3.1`
+
 ### Start GUI version
 
 Run this command to start a GUI version of AutoBA.
@@ -206,6 +218,13 @@ Run this command to start a GUI version of AutoBA.
 - deepseek-7bi: deepseek-coder-7b-instruct-v1.5
 - deepseek-33bi: deepseek-coder-33b-instruct
 - deepseek-67bc: deepseek-llm-67b-chat
+
+**Ollama Engine:**
+- ollama_llama3.1: llama3.1
+- ollama_llama3.1:8b: llama3.1:8b
+- ollama_mistral: mistral
+- ...
+- the `ollama_` prefix is mandatory, for more models, please refer to https://ollama.com/library
 
 ## Use Cases
 
