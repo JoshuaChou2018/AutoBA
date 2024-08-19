@@ -12,9 +12,9 @@ import os
 import torch.cuda
 from src.prompt import PromptGenerator
 from src.spinner import Spinner
-from src.local_llm import api_preload, api_generator, api_preload_deepseek, api_generator_deepseek
 from src.executor import CodeExecutor
 from src.build_RAG_private import preload_retriever
+from src.local_llm import api_preload, api_generator, api_preload_deepseek, api_generator_deepseek
 import openai
 from openai import OpenAI
 import time
@@ -56,6 +56,7 @@ class Agent:
                                   'gpt-4-0613',
                                   'gpt-4-32k-0613',
                                   'gpt-4-1106-preview']
+        self.ollama_engines = ['ollama_llama3.1']
         self.valid_model_engines = self.local_model_engines + self.gpt_model_engines
         self.openai_api = openai_api
 
@@ -87,18 +88,26 @@ class Agent:
         self.gui_mode = gui_mode
         self.cpu = cpu
 
+        if self.model_engine.startswith('ollama_'):
+            print('[INFO] using ollama engine!')
+        elif self.model_engine not in self.valid_model_engines:
+            print('[ERROR] model invalid, please check the model engine selected!')
+            exit()
+
+        # use gpt model
         if self.model_engine in self.gpt_model_engines:
             self.openai_client = OpenAI(
                 # This is the default and can be omitted
                 api_key=self.openai_api,
             )
 
-        if self.model_engine not in self.valid_model_engines:
-            print('[ERROR] model invalid, please check the model engine selected!')
-            exit()
+        # load local model with ollama
+        if self.model_engine.startswith('ollama_'):
+            from langchain_community.llms import Ollama
+            self.local_llm_generator = Ollama(model=self.model_engine.split('ollama_')[-1])
 
         # preload local model
-        if 'llama' in self.model_engine:
+        if 'llama' in self.model_engine and 'ollama_' not in self.model_engine:
             import torch.distributed as dist
             os.environ['MASTER_ADDR'] = 'localhost'
             os.environ['MASTER_PORT'] = '5678'
@@ -106,54 +115,55 @@ class Agent:
                 dist.init_process_group(backend='nccl', init_method='env://', rank=0, world_size=1)
             else:
                 dist.init_process_group(backend='gloo', init_method='env://', rank=0, world_size=1)
-        if self.model_engine == 'codellama-7bi':
-            self.local_llm_generator = api_preload(ckpt_dir='src/codellama-main/CodeLlama-7b-Instruct/',
-                                    tokenizer_path='src/codellama-main/CodeLlama-7b-Instruct/tokenizer.model',
-                                    max_seq_len=4096)
-        elif self.model_engine == 'codellama-13bi':
-            self.local_llm_generator = api_preload(ckpt_dir='src/codellama-main/CodeLlama-13b-Instruct/one-gpu/',
-                                    tokenizer_path='src/codellama-main/CodeLlama-13b-Instruct/tokenizer.model',
-                                    max_seq_len=4096)
-        elif self.model_engine == 'codellama-34bi':
-            self.local_llm_generator = api_preload(ckpt_dir='src/codellama-main/CodeLlama-34b-Instruct/one-gpu/',
-                                    tokenizer_path='src/codellama-main/CodeLlama-34b-Instruct/tokenizer.model',
-                                    max_seq_len=4096)
-        elif self.model_engine == 'llama2-7bc':
-            self.local_llm_generator = api_preload(ckpt_dir='src/llama-main/llama-2-7b-chat/',
-                                    tokenizer_path='src/llama-main/tokenizer.model',
-                                    max_seq_len=4096)
-        elif self.model_engine == 'llama2-13bc':
-            self.local_llm_generator = api_preload(ckpt_dir='src/llama-main/llama-2-13b-chat/one-gpu/',
-                                    tokenizer_path='src/llama-main/tokenizer.model',
-                                    max_seq_len=4096)
-        elif self.model_engine == 'llama2-70bc':
-            self.local_llm_generator = api_preload(ckpt_dir='src/llama-main/llama-2-70b-chat/',
-                                    tokenizer_path='src/llama-main/tokenizer.model',
-                                    max_seq_len=4096)
-        elif self.model_engine == 'deepseek-6.7bi':
-            self.tokenizer, self.local_llm_generator = api_preload_deepseek(
-                ckpt_dir='src/deepseek/deepseek-coder-6.7b-instruct/',
-                tokenizer_path='src/deepseek/deepseek-coder-6.7b-instruct/',
-                cpu = self.cpu
-            )
-        elif self.model_engine == 'deepseek-7bi':
-            self.tokenizer, self.local_llm_generator = api_preload_deepseek(
-                ckpt_dir='src/deepseek/deepseek-coder-7b-instruct-v1.5/',
-                tokenizer_path='src/deepseek/deepseek-coder-7b-instruct-v1.5/',
-                cpu = self.cpu
-            )
-        elif self.model_engine == 'deepseek-33bi':
-            self.tokenizer, self.local_llm_generator = api_preload_deepseek(
-                ckpt_dir='src/deepseek/deepseek-coder-33b-instruct/',
-                tokenizer_path='src/deepseek/deepseek-coder-33b-instruct/',
-                cpu = self.cpu
-            )
-        elif self.model_engine == 'deepseek-67bc':
-            self.tokenizer, self.local_llm_generator = api_preload_deepseek(
-                ckpt_dir='src/deepseek/deepseek-llm-67b-chat/',
-                tokenizer_path='src/deepseek/deepseek-llm-67b-chat/',
-                cpu = self.cpu
-            )
+
+            if self.model_engine == 'codellama-7bi':
+                self.local_llm_generator = api_preload(ckpt_dir='src/codellama-main/CodeLlama-7b-Instruct/',
+                                        tokenizer_path='src/codellama-main/CodeLlama-7b-Instruct/tokenizer.model',
+                                        max_seq_len=4096)
+            elif self.model_engine == 'codellama-13bi':
+                self.local_llm_generator = api_preload(ckpt_dir='src/codellama-main/CodeLlama-13b-Instruct/one-gpu/',
+                                        tokenizer_path='src/codellama-main/CodeLlama-13b-Instruct/tokenizer.model',
+                                        max_seq_len=4096)
+            elif self.model_engine == 'codellama-34bi':
+                self.local_llm_generator = api_preload(ckpt_dir='src/codellama-main/CodeLlama-34b-Instruct/one-gpu/',
+                                        tokenizer_path='src/codellama-main/CodeLlama-34b-Instruct/tokenizer.model',
+                                        max_seq_len=4096)
+            elif self.model_engine == 'llama2-7bc':
+                self.local_llm_generator = api_preload(ckpt_dir='src/llama-main/llama-2-7b-chat/',
+                                        tokenizer_path='src/llama-main/tokenizer.model',
+                                        max_seq_len=4096)
+            elif self.model_engine == 'llama2-13bc':
+                self.local_llm_generator = api_preload(ckpt_dir='src/llama-main/llama-2-13b-chat/one-gpu/',
+                                        tokenizer_path='src/llama-main/tokenizer.model',
+                                        max_seq_len=4096)
+            elif self.model_engine == 'llama2-70bc':
+                self.local_llm_generator = api_preload(ckpt_dir='src/llama-main/llama-2-70b-chat/',
+                                        tokenizer_path='src/llama-main/tokenizer.model',
+                                        max_seq_len=4096)
+            elif self.model_engine == 'deepseek-6.7bi':
+                self.tokenizer, self.local_llm_generator = api_preload_deepseek(
+                    ckpt_dir='src/deepseek/deepseek-coder-6.7b-instruct/',
+                    tokenizer_path='src/deepseek/deepseek-coder-6.7b-instruct/',
+                    cpu = self.cpu
+                )
+            elif self.model_engine == 'deepseek-7bi':
+                self.tokenizer, self.local_llm_generator = api_preload_deepseek(
+                    ckpt_dir='src/deepseek/deepseek-coder-7b-instruct-v1.5/',
+                    tokenizer_path='src/deepseek/deepseek-coder-7b-instruct-v1.5/',
+                    cpu = self.cpu
+                )
+            elif self.model_engine == 'deepseek-33bi':
+                self.tokenizer, self.local_llm_generator = api_preload_deepseek(
+                    ckpt_dir='src/deepseek/deepseek-coder-33b-instruct/',
+                    tokenizer_path='src/deepseek/deepseek-coder-33b-instruct/',
+                    cpu = self.cpu
+                )
+            elif self.model_engine == 'deepseek-67bc':
+                self.tokenizer, self.local_llm_generator = api_preload_deepseek(
+                    ckpt_dir='src/deepseek/deepseek-llm-67b-chat/',
+                    tokenizer_path='src/deepseek/deepseek-llm-67b-chat/',
+                    cpu = self.cpu
+                )
 
 
     def get_single_response(self, prompt):
@@ -224,6 +234,8 @@ class Agent:
                                         generator=self.local_llm_generator,
                                         temperature=0.6)
             response_message = results[0]['generation']['content']
+        elif self.model_engine.startswith('ollama_'):
+            response_message = self.local_llm_generator.invoke(str(prompt))
         return response_message
 
     def valid_json_response(self, response_message):
