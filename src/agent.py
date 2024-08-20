@@ -51,7 +51,10 @@ class Agent:
                                     'deepseek-33bi',
                                     'deepseek-67bc']
         self.gpt_model_engines = ['gpt-3.5-turbo',
+                                  'gpt-4-turbo',
                                   'gpt-4',
+                                  'gpt-4o',
+                                  'gpt-4o-mini',
                                   'gpt-3.5-turbo-1106',
                                   'gpt-4-0613',
                                   'gpt-4-32k-0613',

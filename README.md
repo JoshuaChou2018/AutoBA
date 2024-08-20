@@ -200,8 +200,19 @@ Run this command to start a GUI version of AutoBA.
 ### Model Zoo
 
 **Dynamic Engine: dynamic update version**
-- gpt-3.5-turbo: Currently points to gpt-3.5-turbo-0613, 4,096 tokens, Up to Sep 2021
-- gpt-4: Currently points to gpt-4-0613, 8,192 tokens, Up to Sep 2021 (default)
+- gpt-3.5-turbo: Points to the latest gpt-3.5 model
+- gpt-4-turbo: Points to the latest gpt-4 model
+- gpt-4o: Points to the latest gpt-4o model
+- gpt-4o-mini: Points to the latest gpt-4o-mini model
+- gpt-4: (default)
+- For more information, please check: https://platform.openai.com/docs/models/gpt-4-turbo-and-gpt-4
+
+**Ollama Engine:**
+- ollama_llama3.1: llama3.1
+- ollama_llama3.1:8b: llama3.1:8b
+- ollama_mistral: mistral
+- ...
+- the `ollama_` prefix is mandatory, for more models, please refer to https://ollama.com/library
 
 **Fixed Engine: snapshot version**
 - gpt-3.5-turbo-1106: Updated GPT 3.5 Turbo, 16,385 tokens, Up to Sep 2021
@@ -218,13 +229,6 @@ Run this command to start a GUI version of AutoBA.
 - deepseek-7bi: deepseek-coder-7b-instruct-v1.5
 - deepseek-33bi: deepseek-coder-33b-instruct
 - deepseek-67bc: deepseek-llm-67b-chat
-
-**Ollama Engine:**
-- ollama_llama3.1: llama3.1
-- ollama_llama3.1:8b: llama3.1:8b
-- ollama_mistral: mistral
-- ...
-- the `ollama_` prefix is mandatory, for more models, please refer to https://ollama.com/library
 
 ## Use Cases
 
