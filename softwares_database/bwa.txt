@@ -1,5 +1,5 @@
 1. install
-mamba install bwa
+micromamba install bwa
 
 2. build index
 bwa index <path to reference genome file>

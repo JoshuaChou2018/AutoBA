@@ -12,6 +12,8 @@ from src.agent import Agent
 import yaml
 import argparse
 import time
+import os
+from dotenv import load_dotenv
 
 def main(init_data_list,
          output_dir,
@@ -36,17 +38,19 @@ def main(init_data_list,
     AIAgent.run()
 
 if __name__ == '__main__':
+    # Load environment variables from .env file
+    load_dotenv()
 
     parser = argparse.ArgumentParser(description="ABC", add_help=False)
     parser.add_argument('--config',
                         help='path/to/config.yaml',
                         default='./examples/case1.1/config.yaml')
     parser.add_argument('--openai',
-                        help='openai api',
-                        default='SET_YOUR_OPENAI_API')
+                        help='openai api (overrides .env)',
+                        default=None)
     parser.add_argument('--model',
                         help='name of model engine, e.g. gpt-4, please refer to model zoo',
-                        default='gpt-4')
+                        default='gpt-4o')
     parser.add_argument('--execute',
                         help='execute code or only write codes',
                         default=False,
@@ -66,6 +70,11 @@ if __name__ == '__main__':
                         default=False,
                         type=bool)
     args = parser.parse_args()
+
+    # Use the API key from .env by default, override with command-line arg if provided
+    openai_api_key = args.openai or os.getenv('OPENAI_API_KEY')
+    if not openai_api_key:
+        raise ValueError("OpenAI API key must be set in .env file or provided via --openai argument")
 
     print("""
 
@@ -93,7 +102,7 @@ if __name__ == '__main__':
          output_dir,
          init_goal_description,
          args.model,
-         args.openai,
+         openai_api_key,  # Use the key we determined above
          args.execute,
          args.blacklist,
          args.gui_mode,

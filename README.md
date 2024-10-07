@@ -63,18 +63,17 @@ We're working hard to achieve more features, welcome to PRs!
 ### Command line
 ```shell
 # (mandatory) for basic functions
-curl -L -O "https://github.com/conda-forge/miniforge/releases/latest/download/Mambaforge-$(uname)-$(uname -m).sh"
-bash Mambaforge-$(uname)-$(uname -m).sh
+curl -Ls https://micro.mamba.pm/api/micromamba/linux-64/latest | tar -xvj bin/micromamba
 git clone https://github.com/JoshuaChou2018/AutoBA.git
 
-mamba create -n abc_runtime python==3.10 -y
-mamba activate abc_runtime
+micromamba create -n abc_runtime python==3.10 -y
+micromamba activate abc_runtime
 # Then manually:
 add conda-forge and bioconda to ~/mambaforge/.condarc
             
-mamba create -n abc python==3.10
-mamba activate abc
-mamba install -c anaconda yaml==0.2.5 -y
+micromamba create -n abc python==3.10
+micromamba activate abc
+micromamba install -c anaconda yaml==0.2.5 -y
 pip install openai==1.13.3 pyyaml==6.0
 pip install transformers==4.35.0
 pip install accelerate==0.29.2
@@ -86,7 +85,7 @@ pip install llama-index==0.10.14
 pip install llama-index-embeddings-huggingface
 
 # (optional) for local llm with ollama
-mamba install langchain-community==0.2.6 -y
+micromamba install langchain-community==0.2.6 -y
 curl -fsSL https://ollama.com/install.sh | OLLAMA_VERSION=0.3.4 sh
 ## pull the model before using it with AutoBA
 ollama run llama3.1

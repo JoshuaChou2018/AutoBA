@@ -14,7 +14,7 @@ class CodeExecutor:
     def __init__(self):
         self.bash_code_path = None
         self.code_prefix = [
-            'mamba activate abc_runtime',
+            'micromamba activate abc_runtime',
         ]
         self.code_postfix = [
         ]

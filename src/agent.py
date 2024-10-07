@@ -55,7 +55,9 @@ class Agent:
                                   'gpt-3.5-turbo-1106',
                                   'gpt-4-0613',
                                   'gpt-4-32k-0613',
-                                  'gpt-4-1106-preview']
+                                  'gpt-4-1106-preview',
+                                  'gpt-4o',
+                                  'gpt-4o-mini']
         self.ollama_engines = ['ollama_llama3.1']
         self.valid_model_engines = self.local_model_engines + self.gpt_model_engines
         self.openai_api = openai_api

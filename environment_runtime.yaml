@@ -1,0 +1,8 @@
+name: abc_runtime
+channels:
+  - conda-forge
+  - bioconda
+  - defaults
+dependencies:
+  - python=3.10
+  - pip
