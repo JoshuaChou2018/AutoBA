@@ -17,17 +17,20 @@
 
 (**Automated Bioinformatics Analysis via AutoBA**)
 
-[Juexiao Zhou](https://www.joshuachou.ink/about/), Bin Zhang, Xiuying Chen, Haoyang Li, Xiaopeng Xu, Siyuan Chen, Wenjia He, Chencheng Xu, Xin Gao
+[Juexiao Zhou](https://www.joshuachou.ink/about/), Bin Zhang, Guowei Li, Xiuying Chen, Haoyang Li, Xiaopeng Xu, Siyuan Chen, Wenjia He, Chencheng Xu, Liwei Liu, Xin Gao
 
 King Abdullah University of Science and Technology, KAUST
 
-<a href='media/AutoBA_v7_manuscript.pdf'><img src='https://img.shields.io/badge/Paper-PDF-red'></a>
+Huawei Technologies Co., Ltd
+
+<a href='media/advs.202407094.pdf'><img src='https://img.shields.io/badge/Paper-PDF-red'></a>
 
 https://github.com/JoshuaChou2018/AutoBA/assets/25849209/3334417a-de59-421c-aa5e-e2ac16ce90db
 
 ## What's New
 
-- **[2024/08]** We integrated ollama to make it easier to use local LLMs and released the latest stable version (v0.4.0)
+- **[2024/08]** Our paper is published online at [Advanced Science](https://onlinelibrary.wiley.com/doi/10.1002/advs.202407094)
+- **[2024/08]** We integrated ollama to make it easier to use local LLMs and released the latest stable version `v0.4.0`
 - **[2024/03]** Now we support retrieval-augmented generation (RAG) to increase robustness of AutoBA, to use it, please upgrade openai==1.13.3 and install llama-index.
 - **[2024/02]** Now we support deepseek-coder-6.7b-instruct (failed test), deepseek-coder-7b-instruct-v1.5 (passed test), deepseek-coder-33b-instruct (passed test), to use it, please upgrade transformers==4.35.0.
 - **[2024/01]** Don't like the command line mode? Now we provide a new GUI and released the milestone stable version `v0.2.0` 🎉
@@ -38,7 +41,6 @@ https://github.com/JoshuaChou2018/AutoBA/assets/25849209/3334417a-de59-421c-aa5e
 - **[2023/12]** We provided the latest docker version to simplify the installation process.
 - **[2023/12]** New feature: automated code repairing (ACR module) added, add llama2-chat backends.
 - **[2023/11]** We updated the executor and released the latest stable version (v0.0.2) and are working on automatic error feedback and code fixing.
-- **[2023/10]** We validated AutoBA on 40 conventional bioinformatics tasks and released our new pre-print at https://www.biorxiv.org/content/10.1101/2023.09.08.556814v2. More to come!
 - **[2023/09]** We integrated codellama 7b-Instruct, 13b-Instruct, 34b-Instruct, now users can choose to use chatgpt or local llm as backends, we currently recommend using chatgpt because tests have found that codellama is not as effective as chatgpt for complex bioinformatics tasks.
 - **[2023/09]** We are pleased to announce the official release of AutoBA's latest version `v0.0.1`! 🎉🎉🎉
 
@@ -56,7 +58,15 @@ We're working hard to achieve more features, welcome to PRs!
 - [ ] Pack into a conda package, simplify the installation process
 - [ ] Interactive mode
 - [ ] GUI for data visualization
+- [ ] Continue from breakpoint
 - [ ] ...
+- 
+**We appreciate all contributions to improve AutoBA.**
+
+The `main` branch serves as the primary branch, while the development branch is `dev`.
+
+Thank you for your unwavering support and enthusiasm, and let's work together to make AutoBA even more robust and powerful! If you want to contribute, please PR to the latest `dev` branch. 💪
+
 
 ## Installation
 
@@ -200,8 +210,19 @@ Run this command to start a GUI version of AutoBA.
 ### Model Zoo
 
 **Dynamic Engine: dynamic update version**
-- gpt-3.5-turbo: Currently points to gpt-3.5-turbo-0613, 4,096 tokens, Up to Sep 2021
-- gpt-4: Currently points to gpt-4-0613, 8,192 tokens, Up to Sep 2021 (default)
+- gpt-3.5-turbo: Points to the latest gpt-3.5 model
+- gpt-4-turbo: Points to the latest gpt-4 model
+- gpt-4o: Points to the latest gpt-4o model
+- gpt-4o-mini: Points to the latest gpt-4o-mini model
+- gpt-4: (default)
+- For more information, please check: https://platform.openai.com/docs/models/gpt-4-turbo-and-gpt-4
+
+**Ollama Engine:**
+- ollama_llama3.1: llama3.1
+- ollama_llama3.1:8b: llama3.1:8b
+- ollama_mistral: mistral
+- ...
+- the `ollama_` prefix is mandatory, for more models, please refer to https://ollama.com/library
 
 **Fixed Engine: snapshot version**
 - gpt-3.5-turbo-1106: Updated GPT 3.5 Turbo, 16,385 tokens, Up to Sep 2021
@@ -218,13 +239,6 @@ Run this command to start a GUI version of AutoBA.
 - deepseek-7bi: deepseek-coder-7b-instruct-v1.5
 - deepseek-33bi: deepseek-coder-33b-instruct
 - deepseek-67bc: deepseek-llm-67b-chat
-
-**Ollama Engine:**
-- ollama_llama3.1: llama3.1
-- ollama_llama3.1:8b: llama3.1:8b
-- ollama_mistral: mistral
-- ...
-- the `ollama_` prefix is mandatory, for more models, please refer to https://ollama.com/library
 
 ## Use Cases
 
@@ -449,33 +463,11 @@ goal_description: 'use squidpy for neighborhood enrichment analysis'
 To use AutoBA in your case, please copy `config.yaml` to your destination and modify it accordingly.
 Then you are ready to go. We welcome all developers to submit PR to upload your special cases under `./projects`
 
-## Contributing
-
-We appreciate all contributions to improve AutoBA.
-
-The `main` branch serves as the primary branch, while the development branch is `dev`. 
-
-Thank you for your unwavering support and enthusiasm, and let's work together to make AutoBA even more robust and powerful! If you want to contribute, please PR to `dev`. 💪
-
 ## Citation
 
 If you find this project useful in your research, please consider citing:
 
-```bibtex
-@article {Zhou2023.09.08.556814,
-	author = {Juexiao Zhou and Bin Zhang and Xiuying Chen and Haoyang Li and Xiaopeng Xu and Siyuan Chen and Wenjia He and Chencheng Xu and Xin Gao},
-	title = {An AI Agent for Fully Automated Multi-omic Analyses},
-	elocation-id = {2023.09.08.556814},
-	year = {2024},
-	doi = {10.1101/2023.09.08.556814},
-	publisher = {Cold Spring Harbor Laboratory},
-	abstract = {With the fast-growing and evolving omics data, the demand for streamlined and adaptable tools to handle the bioinformatics analysis continues to grow. In response to this need, we introduce Automated Bioinformatics Analysis (AutoBA), an autonomous AI agent designed explicitly for fully automated multi-omic analyses based on large language models. AutoBA simplifies the analytical process by requiring minimal user input while delivering detailed step-by-step plans for various bioinformatics tasks. Through rigorous validation by expert bioinformaticians, AutoBA{\textquoteright}s robustness and adaptability are affirmed across a diverse range of omics analysis cases, including whole genome/exome sequencing (WGS/WES), chromatin immunoprecipitation assays with sequencing (ChIP-seq), RNA sequencing (RNA-seq), single-cell RNA-seq, spatial transcriptomics and so on. AutoBA{\textquoteright}s unique capacity to self-design analysis processes based on input data variations further underscores its versatility. Compared with online bioinformatic services, AutoBA offers multiple LLM backends, with options for both online and local usage, prioritizing data security and user privacy. Moreover, different from the predefined pipeline, AutoBA has adaptability in sync with emerging bioinformatics tools. Overall, AutoBA represents an advanced and convenient tool, offering robustness and adaptability for conventional multi-omic analyses.Competing Interest StatementThe authors have declared no competing interest.},
-	URL = {https://www.biorxiv.org/content/early/2024/01/05/2023.09.08.556814},
-	eprint = {https://www.biorxiv.org/content/early/2024/01/05/2023.09.08.556814.full.pdf},
-	journal = {bioRxiv}
-}
-
-```
+J. Zhou, B. Zhang, G. Li, X. Chen, H. Li, X. Xu, S. Chen, W. He, C. Xu, L. Liu, X. Gao, An AI Agent for Fully Automated Multi-Omic Analyses. Adv. Sci. 2024, 2407094. https://doi.org/10.1002/advs.202407094
 
 ## License
 
