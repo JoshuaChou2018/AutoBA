@@ -21,8 +21,8 @@ class PromptGenerator:
         self.rag = rag
         self.retriever = retriever
         self.blacklist = blacklist.split(',')
-        self.speciallist = ['sra-toolkit: mamba install sra-tools',
-                            'trim_galore: mamba install trim-galore']
+        self.speciallist = ['sra-toolkit: micromamba install sra-tools',
+                            'trim_galore: micromamba install trim-galore']
 
     def get_executor_prompt(self, executor_info):
         prompt = {
@@ -103,8 +103,8 @@ class PromptGenerator:
                     'You should use full absolute path for all files.',
                 ],
                 "system": [
-                    "You have a Ubuntu 18.04 system",
-                    "You have a mamba environment named abc_runtime",
+                    "You have a Ubuntu 24.04 system",
+                    "You have a micromamba environment named abc_runtime",
                     "You do not have any other software installed"
                 ],
                 "input": [
@@ -115,13 +115,13 @@ class PromptGenerator:
                 "current task": self.current_goal,
                 "code requirement": [
                     f"You should not use those software: {self.blacklist}.",
-                    "You should not create and activate the mamba environment abc_runtime.",
-                    'You should install dependencies and software you need to use with mamba or pip with -y.',
+                    "You should not create and activate the micromamba environment abc_runtime.",
+                    'You should install dependencies and software you need to use with micromamba or pip with -y.',
                     'You should pay attention to the number of input files and do not miss any.',
                     'You should process each file independently and can not use FOR loop.',
                     'You should use the default values for all parameters that are not specified.',
                     'You should not repeat what you have done in history.',
-                    'You should only use software directly you installed with mamba or pip.',
+                    'You should only use software directly you installed with micromamba or pip.',
                     'If you use Rscript -e, you should make sure all variables exist in your command, otherwise, you need to check your history to repeat previous steps and generate those variables.',
                     "You should not write anything else except for your JSON response.",
                     "If RAG is provided, you should use it as template to write codes. You should not copy the RAG directly."

@@ -1,5 +1,5 @@
 1. Install the bowtie2
-mamba install -c bioconda bowtie2 -y
+micromamba install -c bioconda bowtie2 -y
 
 2. Build an index using bowtie2
 bowtie2-build --threads <number of alignment threads to launch> <path to genome fasta file> <path to Index filename prefix (minus trailing .X.bt2)>>

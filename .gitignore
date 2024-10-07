@@ -1,5 +1,15 @@
-
 assets/resizing_script.js
 assets/s1.css
 assets/styles.css
 yaml_generator.py
+
+# Python cache files
+__pycache__/
+*.pyc
+
+# PyCharm/IntelliJ IDEA files
+.idea/
+
+# Virtual environment
+env/
+venv/

@@ -1,5 +1,5 @@
 1. install STAR
-mamba install bioconda::star -y
+micromamba install -c bioconda bioconda::star -y
 
 2. Build a genome index
 STAR --runMode genomeGenerate --runThreadN <int: number of threads to run STAR> --genomeDir <string: path to the directory where genome files are stored> --genomeFastaFiles <string(s): path(s) to the fasta files with the genome sequences>

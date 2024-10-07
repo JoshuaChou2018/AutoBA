@@ -1,5 +1,5 @@
 1. fastp installation
-mamba install -c bioconda fastp -y
+micromamba install -c bioconda fastp -y
 
 2. Use fastp for rawdata quality control, filtering and statistics
 #1 PE

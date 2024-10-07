@@ -1,5 +1,5 @@
 1. Install samtools
-mamba install -c bioconda samtools -y
+micromamba install -c bioconda samtools -y
 
 2. Sort sam files and output them as bam files
 samtools sort <path to sam file> -o <path to output bam file>
