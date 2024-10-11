@@ -60,7 +60,7 @@ We're working hard to achieve more features, welcome to PRs!
 - [ ] GUI for data visualization
 - [ ] Continue from breakpoint
 - [ ] ...
-- 
+
 **We appreciate all contributions to improve AutoBA.**
 
 The `main` branch serves as the primary branch, while the development branch is `dev`.
@@ -78,7 +78,7 @@ You need mamba or micromambma to install autoba. Further we assume that you are 
 curl -L -O "https://github.com/conda-forge/miniforge/releases/latest/download/Mambaforge-$(uname)-$(uname -m).sh"
 bash Mambaforge-$(uname)-$(uname -m).sh
 git clone https://github.com/JoshuaChou2018/AutoBA.git
-
+```
 
 ### Install AutoBA with environment.yaml
 
@@ -100,6 +100,7 @@ mamba env create -f environment_runtime.yaml
 
 Alternatively you can install everything manually without yaml files by:
 
+```shell
 mamba create -n abc_runtime python==3.10 -y
 mamba activate abc_runtime
 # Then manually:
