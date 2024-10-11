@@ -143,7 +143,9 @@ class Agent:
                 self.local_llm_generator = api_preload(ckpt_dir='src/llama-main/llama-2-70b-chat/',
                                         tokenizer_path='src/llama-main/tokenizer.model',
                                         max_seq_len=4096)
-            elif self.model_engine == 'deepseek-6.7bi':
+
+        if 'deepseek' in self.model_engine and 'ollama_' not in self.model_engine:
+            if self.model_engine == 'deepseek-6.7bi':
                 self.tokenizer, self.local_llm_generator = api_preload_deepseek(
                     ckpt_dir='src/deepseek/deepseek-coder-6.7b-instruct/',
                     tokenizer_path='src/deepseek/deepseek-coder-6.7b-instruct/',
