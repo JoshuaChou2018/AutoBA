@@ -3,9 +3,15 @@
 
 from typing import Optional
 import fire
-from llama import Llama
 from transformers import AutoTokenizer, AutoModelForCausalLM, pipeline, set_seed
 import torch
+
+try:
+    from llama import Llama
+    LLAMA_AVAILABLE = True
+except ImportError:
+    LLAMA_AVAILABLE = False
+    print("Warning: 'llama' module not found. Some functions will not be available.")
 
 def api_preload(
     ckpt_dir: str,
@@ -13,6 +19,8 @@ def api_preload(
     max_seq_len: int = 512,
     max_batch_size: int = 8,
 ):
+    if not LLAMA_AVAILABLE:
+        raise ImportError("The 'llama' module is not available. Cannot use api_preload.")
     print(">> start loading model")
 
     generator = Llama.build(

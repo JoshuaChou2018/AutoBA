@@ -1,0 +1,25 @@
+name: abc
+channels:
+  - conda-forge
+  - bioconda
+  - defaults
+dependencies:
+  - python=3.10
+  - yaml=0.2.5
+  - pip
+  - pip:
+    - openai>=1.14.0
+    - pyyaml>=6.0
+    - transformers>=4.40.0
+    - accelerate==0.29.2
+    - bitsandbytes>=0.43.1
+    - vllm>=0.4.1
+    - llama-index>=0.11.16
+    - llama-index-embeddings-huggingface
+    - gradio>=4.14.0
+    - plotly>=5.14.1
+    - dash>=2.9.3
+    - pandas>=2.0.1
+    - dash-mantine-components>=0.12.1
+    - langchain-community>=0.2.6
+    - fire

@@ -70,12 +70,35 @@ Thank you for your unwavering support and enthusiasm, and let's work together to
 
 ## Installation
 
-### Command line
+You need mamba or micromambma to install autoba. Further we assume that you are using mamba.
+
+### Install mamba
 ```shell
 # (mandatory) for basic functions
 curl -L -O "https://github.com/conda-forge/miniforge/releases/latest/download/Mambaforge-$(uname)-$(uname -m).sh"
 bash Mambaforge-$(uname)-$(uname -m).sh
 git clone https://github.com/JoshuaChou2018/AutoBA.git
+
+
+### Install AutoBA with environment.yaml
+
+For AutoBA you need two environments:
+
+1. Development environment to build AutoBA itself, we call it abc, we provide environment.yaml to install it
+```shell
+mamba env create -f environment.yaml
+```
+
+2. Runtime environment to let AutoBA use it for bioinformatic analysis we call it abc_runtime, we provide environment_runtime.yaml to install it
+
+
+```shell
+mamba env create -f environment_runtime.yaml
+```
+
+### Command line installation of the envirinoments
+
+Alternatively you can install everything manually without yaml files by:
 
 mamba create -n abc_runtime python==3.10 -y
 mamba activate abc_runtime
@@ -188,6 +211,8 @@ Run this command to start a simple example with chatgpt as backend (**recommende
 Execute the code while generating it with ACR module loaded.
 
 `python app.py --config ./examples/case1.1/config.yaml --openai YOUR_OPENAI_API --model gpt-4 --execute True`
+
+Note: instead of adding openai key as an option you can also make an .env file as OPENAI_API_KEY=your_openai_api_key
 
 **Please note that this work uses the GPT-4 API and does not guarantee that GPT-3.5 will work properly in all cases.**
 

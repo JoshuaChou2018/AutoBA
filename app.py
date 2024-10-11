@@ -12,6 +12,8 @@ from src.agent import Agent
 import yaml
 import argparse
 import time
+import os
+from dotenv import load_dotenv
 
 def main(init_data_list,
          output_dir,
@@ -37,13 +39,16 @@ def main(init_data_list,
 
 if __name__ == '__main__':
 
+    load_dotenv(override=True)
+    
+
     parser = argparse.ArgumentParser(description="ABC", add_help=False)
     parser.add_argument('--config',
                         help='path/to/config.yaml',
                         default='./examples/case1.1/config.yaml')
     parser.add_argument('--openai',
                         help='openai api',
-                        default='SET_YOUR_OPENAI_API')
+                        default=None) # will use .env file in case if the key is not provided
     parser.add_argument('--model',
                         help='name of model engine, e.g. gpt-4, please refer to model zoo',
                         default='gpt-4')
@@ -89,11 +94,12 @@ if __name__ == '__main__':
     output_dir = configs['output_dir']
     init_goal_description = configs['goal_description']
     start_time = time.time()
+    openai_api_key = args.openai or os.getenv('OPENAI_API_KEY') #uses .env file in case if the key is not provided
     main(init_data_list,
          output_dir,
          init_goal_description,
          args.model,
-         args.openai,
+         openai_api_key,
          args.execute,
          args.blacklist,
          args.gui_mode,
