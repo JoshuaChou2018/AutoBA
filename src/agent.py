@@ -59,7 +59,8 @@ class Agent:
                                   'gpt-4-0613',
                                   'gpt-4-32k-0613',
                                   'gpt-4-1106-preview']
-        self.ollama_engines = ['ollama_llama3.1']
+        self.ollama_engines = ['ollama_llama3.1', '...']
+        self.litellm_engines = ['litellm_gpt-3.5-turbo', '...']
         self.valid_model_engines = self.local_model_engines + self.gpt_model_engines
         self.openai_api = openai_api
 
@@ -93,9 +94,12 @@ class Agent:
 
         if self.model_engine.startswith('ollama_'):
             print('[INFO] using ollama engine!')
+        elif self.model_engine.startswith('litellm_'):
+            print('[INFO] using litellm engine!')
         elif self.model_engine not in self.valid_model_engines:
             print('[ERROR] model invalid, please check the model engine selected!')
             exit()
+        print(f'[INFO] using model version: {self.model_engine}')
 
         # use gpt model
         if self.model_engine in self.gpt_model_engines:
@@ -109,8 +113,14 @@ class Agent:
             from langchain_community.llms import Ollama
             self.local_llm_generator = Ollama(model=self.model_engine.split('ollama_')[-1])
 
+        if self.model_engine.startswith('litellm_'):
+            from litellm import completion as local_llm_generator
+            self.local_llm_generator = local_llm_generator
+
         # preload local model
-        if 'llama' in self.model_engine and 'ollama_' not in self.model_engine:
+        if 'llama' in self.model_engine and \
+                'ollama_' not in self.model_engine and \
+                'litellm_' not in self.model_engine:
             import torch.distributed as dist
             os.environ['MASTER_ADDR'] = 'localhost'
             os.environ['MASTER_PORT'] = '5678'
@@ -144,7 +154,9 @@ class Agent:
                                         tokenizer_path='src/llama-main/tokenizer.model',
                                         max_seq_len=4096)
 
-        if 'deepseek' in self.model_engine and 'ollama_' not in self.model_engine:
+        if 'deepseek' in self.model_engine and \
+                'ollama_' not in self.model_engine and \
+                'litellm_' not in self.model_engine:
             if self.model_engine == 'deepseek-6.7bi':
                 self.tokenizer, self.local_llm_generator = api_preload_deepseek(
                     ckpt_dir='src/deepseek/deepseek-coder-6.7b-instruct/',
@@ -241,14 +253,21 @@ class Agent:
             response_message = results[0]['generation']['content']
         elif self.model_engine.startswith('ollama_'):
             response_message = self.local_llm_generator.invoke(str(prompt))
+        elif self.model_engine.startswith('litellm_'):
+            messages = [{"content": str(prompt), "role": "user"}]
+            response_message = self.local_llm_generator(model=self.model_engine.split('litellm_')[-1], messages=messages).choices[0].message.content
         return response_message
 
     def valid_json_response(self, response_message):
         if not os.path.isdir(f'{self.output_dir}'):
             os.makedirs(f'{self.output_dir}')
+        #if True:
         try:
             with open(f'{self.output_dir}/{self.global_round}_response.json', 'w') as w:
-                json.dump(json.loads(response_message), w)
+                if response_message.startswith('"{'):
+                    json.dump(json.loads(response_message.lstrip('"').rstrip('"')), w)
+                else:
+                    json.dump(json.loads(response_message), w)
             json.load(open(f'{self.output_dir}/{self.global_round}_response.json'))
         except:
             print('[INVALID RESSPONSE]\n', response_message)
@@ -260,7 +279,10 @@ class Agent:
             os.makedirs(f'{self.output_dir}')
         try:
             with open(f'{self.output_dir}/executor_response.json', 'w') as w:
-                json.dump(json.loads(response_message), w)
+                if response_message.startswith('"'):
+                    json.dump(json.loads(response_message.lstrip('"').rstrip('"')), w)
+                else:
+                    json.dump(json.loads(response_message), w)
             tmp_data = json.load(open(f'{self.output_dir}/executor_response.json'))
             if str(tmp_data['stat']) not in ['0', '1']:
                 return False

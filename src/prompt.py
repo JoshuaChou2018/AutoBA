@@ -37,7 +37,7 @@ class PromptGenerator:
             "log output": [
                 executor_info
             ],
-            "fixed format": {
+            "fixed format for JSON response in one line": {
                 "stat": "0 or 1, 0 indicates failure and 1 indicates success",
                 "info": "summarize errors in one sentence."
             }
@@ -74,7 +74,7 @@ class PromptGenerator:
                             data_list
                         ],
                     "goal": self.current_goal,
-                    "fixed format for JSON response": {
+                    "fixed format for JSON response in one line": {
                         "plan": [
                             "Your detailed step-by-step sub-tasks in a list to finish your goal in the format: use some tool to do some task."
                         ]
@@ -127,7 +127,7 @@ class PromptGenerator:
                     "If RAG is provided, you should use it as template to write codes. You should not copy the RAG directly."
                 ],
                 "RAG: If provided, you should replace <...> with correct values and file paths based on information in history": retriever_info,
-                "fixed format for JSON response": {
+                "fixed format for JSON response in one line": {
                     "tool": "name of the tool you use",
                     "code": "bash code to finish the current task in one line."
                 }
@@ -186,6 +186,7 @@ class PromptGenerator:
             print(f'-------------------------------------')
         else:
             print(f'\033[32m[AI]\033[0m')
+            #print(response_message)
             for key in response_message:
                 self.slow_print(f"\033[34m{key}\033[0m", speed=0.01)
                 self.slow_print(response_message[key], speed=0.01)

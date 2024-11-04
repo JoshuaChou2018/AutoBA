@@ -29,6 +29,7 @@ https://github.com/JoshuaChou2018/AutoBA/assets/25849209/3334417a-de59-421c-aa5e
 
 ## What's New
 
+- **[2024/11]** We have integrated LiteLLM. Manually installed local LLMs will be deprecated and maintenance will be stopped in future versions. For online LLMs, please use LiteLLM API. For local LLMs, please use Ollama API.
 - **[2024/08]** Our paper is published online at [Advanced Science](https://onlinelibrary.wiley.com/doi/10.1002/advs.202407094)
 - **[2024/08]** We integrated ollama to make it easier to use local LLMs and released the latest stable version `v0.4.0`
 - **[2024/03]** Now we support retrieval-augmented generation (RAG) to increase robustness of AutoBA, to use it, please upgrade openai==1.13.3 and install llama-index.
@@ -54,7 +55,8 @@ We're working hard to achieve more features, welcome to PRs!
 - [x] A UI-based YAML generator
 - [x] Support deepseek coder
 - [x] Support RAG
-- [x] Support ollama
+- [x] Support Ollama
+- [x] Support LiteLLM
 - [ ] Pack into a conda package, simplify the installation process
 - [ ] Interactive mode
 - [ ] GUI for data visualization
@@ -125,10 +127,13 @@ curl -fsSL https://ollama.com/install.sh | OLLAMA_VERSION=0.3.4 sh
 ## pull the model before using it with AutoBA
 ollama run llama3.1
 
+# (optional) for online llm with liteLLM
+pip install litellm==1.0.0
+
 # (optional) for gui version
 pip install gradio==4.14.0
 
-# (optional) for local llm (llama2)
+# (optional, will be deprecated soon) for local llm (llama2)
 cd AutoBA/src/codellama-main
 pip install -e .
 
@@ -146,14 +151,14 @@ git clone https://huggingface.co/codellama/CodeLlama-7b-Instruct-hf
 git clone https://huggingface.co/codellama/CodeLlama-13b-Instruct-hf
 git clone https://huggingface.co/codellama/CodeLlama-34b-Instruct-hf
 
-# (optional) for local llm (deepseek)
+# (optional, will be deprecated soon) for local llm (deepseek)
 cd AutoBA/src/deepseek
 git clone https://huggingface.co/deepseek-ai/deepseek-coder-6.7b-instruct
 git clone https://huggingface.co/deepseek-ai/deepseek-coder-7b-instruct-v1.5
 git clone https://huggingface.co/deepseek-ai/deepseek-coder-33b-instruct
 git clone https://huggingface.co/deepseek-ai/deepseek-llm-67b-chat
 
-# (optional) for features under development: the yaml generator UI
+# (optional) the yaml generator UI
 pip install plotly==5.14.1 dash==2.9.3 pandas==2.0.1 dash-mantine-components==0.12.1
 ```
 
@@ -249,6 +254,11 @@ Run this command to start a GUI version of AutoBA.
 - ollama_mistral: mistral
 - ...
 - the `ollama_` prefix is mandatory, for more models, please refer to https://ollama.com/library
+
+**LiteLLM Engine:**
+- litellm_gpt-3.5-turbo: gpt-3.5-turbo
+- ...
+- the `litellm_` prefix is mandatory, for more models, please refer to https://models.litellm.ai
 
 **Fixed Engine: snapshot version**
 - gpt-3.5-turbo-1106: Updated GPT 3.5 Turbo, 16,385 tokens, Up to Sep 2021
