@@ -1,3 +1,10 @@
+# Byte-compiled / optimized / DLL files
+src/__pycache__/
+
+# modle files
+src/codellama-main/CodeLlama-34b-Instruct-hf/
+
+
 
 assets/resizing_script.js
 assets/s1.css
